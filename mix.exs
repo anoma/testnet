@@ -55,6 +55,7 @@ defmodule Anoma.MixProject do
       {:ecto_watch, "~> 0.11.1"},
       {:quantum, "~> 3.5.3"},
       {:cors_plug, "~> 3.0"},
+      {:websockex, "~> 0.4.3"},
       {:prom_ex, "~> 1.11.0"}
     ]
   end

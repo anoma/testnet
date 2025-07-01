@@ -10,7 +10,12 @@ defmodule Anoma.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
+    other_children = [
+      Anoma.Scheduler,
+      Anoma.Coinbase
+    ]
+
+    default_children = [
       AnomaWeb.Telemetry,
       Anoma.Repo,
       {DNSCluster, query: Application.get_env(:anoma, :dns_cluster_query) || :ignore},
@@ -26,9 +31,17 @@ defmodule Anoma.Application do
          {DailyPoint, :inserted},
          {User, :updated}
        ]},
-      Anoma.Scheduler,
       Anoma.PromEx
     ]
+
+    children =
+      case Mix.env() do
+        x when x in [:dev, :prod] ->
+          default_children ++ other_children
+
+        _ ->
+          default_children
+      end
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
