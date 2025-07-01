@@ -3,7 +3,6 @@ defmodule AnomaWeb.Api.CouponControllerTest do
 
   import Anoma.AccountsFixtures
   import Anoma.Accounts.CouponsFixtures
-  alias Anoma.Accounts
   alias AnomaWeb.Plugs.AuthPlug
 
   setup %{conn: conn} do
