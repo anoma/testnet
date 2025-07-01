@@ -13,6 +13,19 @@ defmodule Anoma.Invites do
   require Logger
 
   @doc """
+  Returns the number of unused invites and used invites.
+  """
+  @spec open_invites :: %{used: number(), unused: number()}
+  def open_invites do
+    Anoma.Invites.list_invites()
+    |> Enum.group_by(&if &1.invitee == nil, do: :unused, else: :used)
+    |> Map.put_new(:used, [])
+    |> Map.put_new(:unused, [])
+    |> Enum.map(fn {k, v} -> {k, Enum.count(v)} end)
+    |> Enum.into(%{})
+  end
+
+  @doc """
   Returns the list of invites.
 
   ## Examples

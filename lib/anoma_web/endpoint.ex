@@ -11,9 +11,9 @@ defmodule AnomaWeb.Endpoint do
     same_site: "Lax"
   ]
 
-  # socket "/live", Phoenix.LiveView.Socket,
-  #   websocket: [connect_info: [session: @session_options]],
-  #   longpoll: [connect_info: [session: @session_options]]
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [connect_info: [session: @session_options]],
+    longpoll: [connect_info: [session: @session_options]]
 
   # WebSocket configuration
   socket "/socket", AnomaWeb.UserSocket,
@@ -40,6 +40,8 @@ defmodule AnomaWeb.Endpoint do
   end
 
   plug Plug.RequestId
+  plug PromEx.Plug, prom_ex_module: Anoma.PromEx
+
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
