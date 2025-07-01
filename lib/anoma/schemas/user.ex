@@ -36,6 +36,9 @@ defmodule Anoma.Accounts.User do
     # invites available to this user
     has_many :invites, Anoma.Accounts.Invite, foreign_key: :owner_id
 
+    # a user can have many bets
+    has_many :bets, Anoma.Pricing.Bet, foreign_key: :user_id
+
     has_one :invite, Anoma.Accounts.Invite, foreign_key: :invitee_id
 
     has_many :daily_points, Anoma.Accounts.DailyPoint
