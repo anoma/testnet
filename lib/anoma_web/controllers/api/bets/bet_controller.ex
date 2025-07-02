@@ -27,6 +27,17 @@ defmodule AnomaWeb.Api.BetController do
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
+  operation :get,
+    security: [%{"authorization" => []}],
+    summary: "Get the information about a bet",
+        parameters: [
+      id: [in: :path, schema: Schemas.BetDetailsRequest]
+    ],
+    responses: %{
+      200 => {"Bet", "application/json", Anoma.Pricing.Bet},
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
+    }
+
   # ----------------------------------------------------------------------------
   # Actions
 
@@ -46,16 +57,19 @@ defmodule AnomaWeb.Api.BetController do
   Lets a user place a bet.
   """
   @spec get(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def get(conn, %{"bet_id" => bet_id}) do
-      conn.assigns.current_user
-      |> Anoma.Repo.preload(:bets)
-      |> Enum.find(&(&1.id == bet_id))
-      |> case do
-        %Bet{} = bet ->
-          render(conn, :bet, bet: bet)
+  def get(conn, params = %{"id" => bet_id}) do
+    IO.inspect params
+    conn.assigns.current_user
+    |> Anoma.Repo.preload(:bets)
+    |> Map.get(:bets)
+    |> tap(&IO.inspect(&1, label: "bets"))
+    |> Enum.find(&(&1.id == bet_id))
+    |> case do
+      %Bet{} = bet ->
+        render(conn, :bet, bet: bet)
 
-        _ ->
-          {:error, :bet_not_found}
-      end
+      _ ->
+        {:error, :bet_not_found}
+    end
   end
 end

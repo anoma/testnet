@@ -18,4 +18,11 @@ defmodule AnomaWeb.Api.BetController.Schemas do
       }
     })
   end
+
+  defmodule BetDetailsRequest do
+    @moduledoc false
+    require OpenApiSpex
+
+    OpenApiSpex.schema(%{type: :string, description: "Bet ID", example: "1234-5678-9101-1121"})
+  end
 end
