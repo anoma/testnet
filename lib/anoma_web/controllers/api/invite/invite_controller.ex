@@ -7,20 +7,18 @@ defmodule AnomaWeb.Api.InviteController do
   alias AnomaWeb.ApiSpec.Schemas.JsonSuccess
   alias OpenApiSpex.Operation
   alias OpenApiSpex.Schema
+  alias AnomaWeb.Api.InviteController.Schemas
 
   action_fallback AnomaWeb.FallbackController
 
   use OpenApiSpex.ControllerSpecs
 
-  tags ["invites"]
+  tags ["Invites"]
 
   operation :redeem_invite,
     security: [%{"authorization" => []}],
     summary: "Redeem an invite code",
-    parameters: [
-      id: [in: :path, description: "invite code", type: :string, example: "let me in"]
-    ],
-    request_body: {},
+    request_body: {"Invite Redeem Request", "application/json", Schemas.RedeemRequest},
     responses: %{
       401 => Operation.response("Failure", "application/json", JsonError),
       200 => Operation.response("Failure", "application/json", JsonSuccess)

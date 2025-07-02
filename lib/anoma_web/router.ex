@@ -63,13 +63,18 @@ defmodule AnomaWeb.Router do
     # /api/v1/coupons
     scope "/coupons" do
       get "/", CouponController, :list
-      put "/use/:id", CouponController, :use
+      put "/use", CouponController, :use
     end
 
     # /api/v1/invite
     scope "/invite" do
       get "/", InviteController, :list_invites
       put "/redeem/:invite_code", InviteController, :redeem_invite
+    end
+
+    # /api/v1/bet
+    scope "/bet" do
+      post "/place", BetController, :place
     end
   end
 

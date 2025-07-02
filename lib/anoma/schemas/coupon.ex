@@ -5,6 +5,31 @@ defmodule Anoma.Accounts.Coupon do
   use Ecto.Schema
   use TypedEctoSchema
   import Ecto.Changeset
+  alias OpenApiSpex.Schema
+
+  # ----------------------------------------------------------------------------
+  # OpenAPI Schema
+
+  @schema %Schema{
+    title: "Coupon",
+    description: "Daily coupon for the lottery",
+    type: :object,
+    properties: %{
+      id: %Schema{type: :integer, description: "Coupon ID"},
+      used: %Schema{type: :boolean, description: "Has the coupon been used?"}
+    },
+    required: [:name, :email],
+    example: %{
+      "id" => "18d3bb76-2e27-4cd0-9912-b8b259bd3950",
+      "used" => true
+    },
+    "x-struct": Anoma.Accounts.Coupon
+  }
+
+  def schema, do: @schema
+
+  # ----------------------------------------------------------------------------
+  # Schema
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id

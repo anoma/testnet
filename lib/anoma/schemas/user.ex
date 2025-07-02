@@ -6,11 +6,41 @@ defmodule Anoma.Accounts.User do
   use TypedEctoSchema
 
   import Ecto.Changeset
+  alias OpenApiSpex.Schema
 
+  # ----------------------------------------------------------------------------
+  # OpenAPI Schema
+
+  @schema %Schema{
+    title: "User",
+    description: "A user",
+    type: :object,
+    properties: %{
+      id: %Schema{type: :integer, description: "User id"},
+      eth_address: %Schema{type: :string, description: "User their ethereum address"},
+      gas: %Schema{type: :integer, description: "Total gas the user has"},
+      points: %Schema{type: :integer, description: "Total points the user has"}
+    },
+    required: [:name, :email],
+    example: %{
+      "id" => "18d3bb76-2e27-4cd0-9912-b8b259bd3950",
+      "points" => 1,
+      "gas" => 1,
+      "eth_address" => "0xDEADBEEF"
+    },
+    "x-struct": __MODULE__
+  }
+
+  def schema, do: @schema
+
+  # ----------------------------------------------------------------------------
+  # Schema
+
+  @json_fields [:id, :eth_address, :gas, :points]
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   typed_schema "users" do
-    @derive {Jason.Encoder, except: [:__meta__, :__struct__, :auth_token]}
+    @derive {Jason.Encoder, only: @json_fields}
     field :email, :string
     field :confirmed_at, :utc_datetime
     field :points, :integer, default: 0

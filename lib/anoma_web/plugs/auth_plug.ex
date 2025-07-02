@@ -15,30 +15,36 @@ defmodule AnomaWeb.Plugs.AuthPlug do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    case get_token_from_header(conn) do
-      {:ok, token} ->
-        Logger.debug("auth token: #{token}")
+    if Mix.env() == :dev do
+      conn
+      |> assign(:invited?, true)
+      |> assign(:current_user, Accounts.list_users() |> Enum.sort_by(& &1.id) |> hd())
+    else
+      case get_token_from_header(conn) do
+        {:ok, token} ->
+          Logger.debug("auth token: #{token}")
 
-        case verify_token(token) do
-          {:ok, payload} ->
-            case load_user(payload) do
-              {:ok, user} ->
-                invited? = user.invite != nil
+          case verify_token(token) do
+            {:ok, payload} ->
+              case load_user(payload) do
+                {:ok, user} ->
+                  invited? = user.invite != nil
 
-                conn
-                |> assign(:invited?, invited?)
-                |> assign(:current_user, user)
+                  conn
+                  |> assign(:invited?, invited?)
+                  |> assign(:current_user, user)
 
-              {:error, _} ->
-                unauthorized(conn)
-            end
+                {:error, _} ->
+                  unauthorized(conn)
+              end
 
-          {:error, _} ->
-            unauthorized(conn)
-        end
+            {:error, _} ->
+              unauthorized(conn)
+          end
 
-      {:error, _} ->
-        unauthorized(conn)
+        {:error, _} ->
+          unauthorized(conn)
+      end
     end
   end
 

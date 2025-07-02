@@ -109,6 +109,8 @@ defmodule Anoma.Bets do
   @doc """
   Places a bet for a user with the given parameters.
   """
+  @spec place_bet(User.t(), boolean(), number(), number()) ::
+          {:ok, Bet.t()} | {:error, :not_enough_gas | :not_enough_points}
   def place_bet(user, up?, multiplier, points) do
     # compute the required gas to place this bet
     required_gas = (:math.pow(multiplier, 2) * 10) |> trunc()

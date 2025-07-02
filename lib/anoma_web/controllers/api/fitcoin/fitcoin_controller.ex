@@ -4,47 +4,29 @@ defmodule AnomaWeb.Api.FitcoinController do
   require Logger
 
   alias Anoma.Accounts
-  alias AnomaWeb.ApiSpec.Schemas.JsonError
-  alias OpenApiSpex.Schema
+  alias AnomaWeb.Api.FitcoinController.Schemas
+  alias AnomaWeb.Api
 
   action_fallback AnomaWeb.FallbackController
 
   use OpenApiSpex.ControllerSpecs
 
-  tags ["fitcoin"]
+  tags ["Fitcoins"]
 
   operation :add,
     security: [%{"authorization" => []}],
     summary: "Add fitcoin to the account of the user",
-    parameters: [],
     responses: %{
-      200 =>
-        {"success", "application/json",
-         %Schema{
-           type: :object,
-           properties: %{
-             success: %Schema{type: :boolean, description: "success message", example: false},
-             fitcoins: %Schema{type: :integer, description: "fitcoin balance", example: 123}
-           }
-         }},
-      400 => {"Failed to authenticate", "application/json", JsonError}
+      200 => {"Fitcoin added", "application/json", Api.Schemas.Success},
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
   operation :balance,
     security: [%{"authorization" => []}],
-    summary: "Return the current fitcoin balance",
-    parameters: [],
+    summary: "Returns the current fitcoin balance",
     responses: %{
-      200 =>
-        {"success", "application/json",
-         %Schema{
-           type: :object,
-           properties: %{
-             success: %Schema{type: :boolean, description: "success message", example: false},
-             fitcoins: %Schema{type: :integer, description: "fitcoin balance", example: 123}
-           }
-         }},
-      400 => {"Failed to authenticate", "application/json", JsonError}
+      200 => {"Fitcoin balance", "application/json", Schemas.FitcoinBalance},
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
   @doc """
