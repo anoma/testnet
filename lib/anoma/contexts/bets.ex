@@ -1,0 +1,220 @@
+defmodule Anoma.Bets do
+  @moduledoc """
+  The Pricing context.
+  """
+
+  import Ecto.Query, warn: false
+
+  alias Anoma.Accounts
+  alias Anoma.Accounts.User
+  alias Anoma.Pricing.Bet
+  alias Anoma.Pricing.Currency
+  alias Anoma.Repo
+
+  require Logger
+
+  @doc """
+  Returns the list of bets.
+
+  ## Examples
+
+      iex> list_bets()
+      [%Bet{}, ...]
+
+  """
+  def list_bets do
+    Repo.all(Bet)
+  end
+
+  @doc """
+  Gets a single bet.
+
+  Raises `Ecto.NoResultsError` if the Bet does not exist.
+
+  ## Examples
+
+      iex> get_bet!(123)
+      %Bet{}
+
+      iex> get_bet!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_bet!(id), do: Repo.get!(Bet, id)
+
+  @doc """
+  Creates a bet.
+
+  ## Examples
+
+      iex> create_bet(%{field: value})
+      {:ok, %Bet{}}
+
+      iex> create_bet(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_bet(attrs \\ %{}) do
+    %Bet{}
+    |> Bet.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a bet.
+
+  ## Examples
+
+      iex> update_bet(bet, %{field: new_value})
+      {:ok, %Bet{}}
+
+      iex> update_bet(bet, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_bet(%Bet{} = bet, attrs) do
+    bet
+    |> Bet.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a bet.
+
+  ## Examples
+
+      iex> delete_bet(bet)
+      {:ok, %Bet{}}
+
+      iex> delete_bet(bet)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_bet(%Bet{} = bet) do
+    Repo.delete(bet)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking bet changes.
+
+  ## Examples
+
+      iex> change_bet(bet)
+      %Ecto.Changeset{data: %Bet{}}
+
+  """
+  def change_bet(%Bet{} = bet, attrs \\ %{}) do
+    Bet.changeset(bet, attrs)
+  end
+
+  @doc """
+  Places a bet for a user with the given parameters.
+  """
+  @spec place_bet(User.t(), boolean(), number(), number()) ::
+          {:ok, Bet.t()} | {:error, :not_enough_gas | :not_enough_points}
+  def place_bet(user, up?, multiplier, points) do
+    # compute the required gas to place this bet
+    required_gas = (:math.pow(multiplier, 2) * 10) |> trunc()
+    required_points = points
+
+    Repo.transaction(fn ->
+      # fetch the user to get the latest points
+      user = Accounts.get_user!(user.id)
+
+      # make sure the user has all the required points and gas
+      cond do
+        required_gas > user.gas ->
+          Repo.rollback(:not_enough_gas)
+
+        required_points > user.points ->
+          Repo.rollback(:not_enough_points)
+
+        true ->
+          # deduct the points from the user
+          {:ok, user} =
+            Accounts.update_user(user, %{
+              points: user.points - required_points,
+              gas: user.gas - required_gas
+            })
+
+          # create the bet
+          {:ok, bet} =
+            create_bet(%{
+              user_id: user.id,
+              up: up?,
+              points: points,
+              multiplier: multiplier
+            })
+
+          bet
+      end
+    end)
+  end
+
+  @doc """
+  I settle a bet if its possible.
+  """
+  def settle_bet(%Bet{} = bet) do
+    bet = Repo.preload(bet, :user)
+    user = bet.user
+    # if the user won, update their balance.
+    case won?(bet) do
+      {:ok, :won, profit} ->
+        {:ok, _user} = Accounts.update_user(user, %{points: user.points + profit})
+        {:ok, bet} = update_bet(bet, %{settled: true})
+        {:ok, bet, :won}
+
+      {:ok, :lost} ->
+        {:ok, bet} = update_bet(bet, %{settled: true})
+        {:ok, bet, :lost}
+
+      {:error, err} ->
+        {:error, err}
+    end
+
+    # mark the transaction as settled
+  end
+
+  # ----------------------------------------------------------------------------#
+  #                                Helpers                                     #
+  # ----------------------------------------------------------------------------#
+
+  # check if the bet is won
+  @spec won?(Bet.t()) ::
+          {:ok, :won, number()} | {:ok, :lost} | {:error, :already_settled} | {:error, term()}
+  defp won?(bet) do
+    with bet <- Repo.preload(bet, :user),
+         {:ok, start_price, end_price} <- has_price_info?(bet) do
+      # calculate the profit
+      profit = (bet.multiplier + 1) * bet.points
+
+      # check if the bet is won
+      cond do
+        bet.settled ->
+          {:error, :already_settled}
+
+        bet.up and start_price < end_price ->
+          {:ok, :won, profit}
+
+        true ->
+          {:ok, :lost}
+      end
+    else
+      {:error, err} ->
+        {:error, err}
+    end
+  end
+
+  # check if there is enough price info to settle this bet
+  @spec has_price_info?(Bet.t()) :: {:ok, float(), float()} | {:error, :no_price_information}
+  defp has_price_info?(bet) do
+    with %Currency{price: btc_price_at_bet} <- Anoma.Pricing.price_at("BTC-USD", bet.inserted_at),
+         settle_time <- DateTime.add(bet.inserted_at, 1, :minute),
+         %Currency{price: btc_price_now} <- Anoma.Pricing.price_at("BTC-USD", settle_time) do
+      {:ok, btc_price_at_bet, btc_price_now}
+    else
+      _ ->
+        {:error, :no_price_information}
+    end
+  end
+end

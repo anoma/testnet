@@ -12,11 +12,10 @@
 
 # Script for populating the database with invite codes
 alias Anoma.Accounts
-alias Anoma.Accounts.Invite
 alias Anoma.Invites
 
-invites = 10
-users = 10
+invites = 1
+users = 1
 
 if Mix.env() == :dev do
   # Function to generate a unique invite code

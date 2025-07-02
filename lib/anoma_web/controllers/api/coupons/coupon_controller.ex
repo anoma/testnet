@@ -4,9 +4,8 @@ defmodule AnomaWeb.Api.CouponController do
   require Logger
 
   alias Anoma.Accounts.Coupons
-  alias AnomaWeb.ApiSpec.Schemas.JsonError
-  alias AnomaWeb.ApiSpec.Schemas.JsonSuccess
-  alias OpenApiSpex.Schema
+  alias AnomaWeb.Api
+  alias AnomaWeb.Api.CouponController.Schemas
 
   action_fallback AnomaWeb.FallbackController
 
@@ -16,46 +15,18 @@ defmodule AnomaWeb.Api.CouponController do
   operation :list,
     security: [%{"authorization" => []}],
     summary: "List of available coupons",
-    request_body: {},
     responses: %{
-      200 =>
-        {"success", "application/json",
-         %Schema{
-           type: :object,
-           properties: %{
-             coupons: %Schema{
-               type: :array,
-               items: %Schema{
-                 type: :object,
-                 properties: %{
-                   id: %Schema{
-                     type: :string,
-                     description: "coupon id",
-                     example: "846621ca-e843-426c-9ccd-09e1d57f8929"
-                   }
-                 }
-               }
-             }
-           }
-         }},
-      400 => {"Generic error", "application/json", JsonError}
+      200 => {"List of Coupons", "application/json", Schemas.CouponList},
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
   operation :use,
     security: [%{"authorization" => []}],
-    summary: "Use a coupon",
-    request_body: {},
-    parameters: [
-      id: [
-        in: :path,
-        description: "coupon id",
-        type: :string,
-        example: "9cb7c823-a2c3-4a3e-90c2-520125e084d2"
-      ]
-    ],
+    summary: "Redeem a coupon",
+    request_body: {"Coupon Redeem Request", "application/json", Schemas.RedeemRequest},
     responses: %{
-      200 => {"Coupon used", "application/json", JsonSuccess},
-      400 => {"Generic error", "application/json", JsonError}
+      400 => {"Generic error", "application/json", Api.Schemas.Error},
+      200 => {"Failure", "application/json", Api.Schemas.Success}
     }
 
   @doc """
