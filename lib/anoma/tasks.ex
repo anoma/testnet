@@ -59,7 +59,7 @@ defmodule Anoma.Tasks do
     Anoma.Bets.list_bets()
     |> Enum.each(fn bet ->
       # fetch the user of the bet
-      bet = Repo.preload(:user)
+      bet = Anoma.Repo.preload(bet, :user)
       # first check if this bet can be settled.
       # i.e., is there enough pricing info available
       case can_settle?(bet) do

@@ -125,7 +125,6 @@ defmodule Anoma.BetsTest do
           user_id: user.id,
           multiplier: 1,
           points: 1,
-          multiplier: 1,
           inserted_at: ~U[2025-07-01 09:00:00Z]
         })
 
@@ -134,7 +133,7 @@ defmodule Anoma.BetsTest do
       assert bet.settled == false
 
       # try and settle the bet
-      {:ok, bet, :won} = Bets.settle_bet(bet)
+      {:ok, _bet, :won} = Bets.settle_bet(bet)
 
       # assert the user has won points
       user = Accounts.get_user!(user.id)
@@ -158,7 +157,6 @@ defmodule Anoma.BetsTest do
           user_id: user.id,
           multiplier: 1,
           points: 1,
-          multiplier: 1,
           inserted_at: ~U[2025-07-01 09:00:00Z]
         })
 
@@ -167,7 +165,7 @@ defmodule Anoma.BetsTest do
       assert bet.settled == false
 
       # try and settle the bet
-      {:ok, bet, :won} = Bets.settle_bet(bet)
+      {:ok, _bet, :won} = Bets.settle_bet(bet)
 
       # assert the user has won points
       user = Accounts.get_user!(user.id)
@@ -191,7 +189,6 @@ defmodule Anoma.BetsTest do
           user_id: user.id,
           multiplier: 1,
           points: 1,
-          multiplier: 1,
           inserted_at: ~U[2025-07-01 09:00:00Z]
         })
 
@@ -219,7 +216,6 @@ defmodule Anoma.BetsTest do
           user_id: user.id,
           multiplier: 1,
           points: 1,
-          multiplier: 1,
           inserted_at: ~U[2025-07-01 09:00:00Z]
         })
 
@@ -228,7 +224,7 @@ defmodule Anoma.BetsTest do
       assert bet.settled == false
 
       # try and settle the bet
-      {:ok, bet, :lost} = Bets.settle_bet(bet)
+      {:ok, _bet, :lost} = Bets.settle_bet(bet)
 
       # assert the user has won points
       user = Accounts.get_user!(user.id)
@@ -252,7 +248,6 @@ defmodule Anoma.BetsTest do
           user_id: user.id,
           multiplier: 1,
           points: 1,
-          multiplier: 1,
           inserted_at: ~U[2025-07-01 09:00:00Z]
         })
 

@@ -6,8 +6,6 @@ defmodule Anoma.Bets do
   import Ecto.Query, warn: false
 
   alias Anoma.Accounts
-  alias Anoma.Accounts.DailyPoints
-  alias Anoma.Invites
   alias Anoma.Pricing.Bet
   alias Anoma.Pricing.Currency
   alias Anoma.Repo
@@ -159,7 +157,7 @@ defmodule Anoma.Bets do
     # if the user won, update their balance.
     case won?(bet) do
       {:ok, :won, profit} ->
-        {:ok, user} = Accounts.update_user(user, %{points: user.points + profit})
+        {:ok, _user} = Accounts.update_user(user, %{points: user.points + profit})
         {:ok, bet} = update_bet(bet, %{settled: true})
         {:ok, bet, :won}
 
