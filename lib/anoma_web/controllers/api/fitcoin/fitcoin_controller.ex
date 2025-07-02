@@ -11,6 +11,7 @@ defmodule AnomaWeb.Api.FitcoinController do
 
   use OpenApiSpex.ControllerSpecs
 
+  plug AnomaWeb.Plugs.RateLimit, action: :add
   # ----------------------------------------------------------------------------
   # OpenAPI Spec
 

@@ -1,4 +1,15 @@
 services:
+  db:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=anoma_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   app:
     build: ../
     ports:
@@ -10,20 +21,12 @@ services:
       - TWITTER_CLIENT_SECRET=${TWITTER_CLIENT_SECRET}
       - PORT=${PORT:-4000}
       - PHX_HOST=${PHX_HOST:-0.0.0.0}
+      - COINBASE_API_KEY=${COINBASE_API_KEY}
+      - COINBASE_SECRET=${COINBASE_SECRET}
     depends_on:
       - db
 
-  db:
-    image: postgres:17
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=anoma_dev
-    ports:
-      - "5432:5432"
-    network_mode: "host"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+
 
 volumes:
   postgres_data:

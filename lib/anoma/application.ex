@@ -17,6 +17,7 @@ defmodule Anoma.Application do
         []
       end ++
         [
+          Anoma.RateLimit,
           AnomaWeb.Telemetry,
           Anoma.Repo,
           {DNSCluster, query: Application.get_env(:anoma, :dns_cluster_query) || :ignore},

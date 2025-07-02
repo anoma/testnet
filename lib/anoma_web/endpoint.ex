@@ -40,7 +40,7 @@ defmodule AnomaWeb.Endpoint do
   end
 
   plug Plug.RequestId
-  plug AnomaWeb.Plugs.LocalOnly, path: "/metrics"
+  # plug AnomaWeb.Plugs.LocalOnly, path: "/metrics"
   plug AnomaWeb.Plugs.HealthCheck
   plug PromEx.Plug, prom_ex_module: Anoma.PromEx
 

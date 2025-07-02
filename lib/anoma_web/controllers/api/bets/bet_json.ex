@@ -20,9 +20,6 @@ defmodule AnomaWeb.Api.BetJSON do
     bet
   end
 
-  @doc """
-  Render a bet
-  """
   def bet(bet) do
     bet
   end

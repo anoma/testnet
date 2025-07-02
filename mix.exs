@@ -58,7 +58,8 @@ defmodule Anoma.MixProject do
       {:websockex, "~> 0.4.3"},
       {:prom_ex, "~> 1.11.0"},
       {:ex_keccak, "~> 0.7.6"},
-      {:ex_secp256k1, "~> 0.7.4"}
+      {:ex_secp256k1, "~> 0.7.4"},
+      {:hammer, "~> 7.0.0"}
     ]
   end
 
