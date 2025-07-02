@@ -34,7 +34,7 @@ defmodule Anoma.Accounts.Invite do
   # ----------------------------------------------------------------------------
   # Schema
 
-  @json_fields [:__meta__, :__struct__, :owner, :invitee]
+  @json_fields [:__meta__, :__struct__, :owner, :invitee, :owner_id, :inserted_at, :updated_at]
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   typed_schema "invites" do
@@ -50,7 +50,7 @@ defmodule Anoma.Accounts.Invite do
   @doc false
   def changeset(invite, attrs) do
     invite
-    |> cast(attrs, [:code])
+    |> cast(attrs, [:code, :owner_id, :invitee_id])
     |> validate_required([:code])
     |> unique_constraint(:code)
   end

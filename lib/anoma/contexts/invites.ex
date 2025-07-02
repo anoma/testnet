@@ -56,6 +56,28 @@ defmodule Anoma.Invites do
   end
 
   @doc """
+  Retrieves an invite based on its code.
+
+  ## Examples
+
+      iex> get_invite_by_code!("INV-123456789")
+      %Invite{}
+
+      iex> get_invite_by_code!("nonexistent")
+      nil
+  """
+  @spec get_invite_by_code(String.t()) :: {:ok, Invite.t()} | {:error, :invite_not_found}
+  def get_invite_by_code(code) do
+    case Repo.get_by(Invite, code: code) do
+      %Invite{} = invite ->
+        {:ok, invite}
+
+      nil ->
+        {:error, :invite_not_found}
+    end
+  end
+
+  @doc """
   Gets a single invite.
 
   Raises `Ecto.NoResultsError` if the Invite does not exist.
@@ -126,16 +148,21 @@ defmodule Anoma.Invites do
     Repo.transaction(fn ->
       # ensure invite is not claimed
       invite = get_invite!(invite.id)
-      user = Accounts.get_user!(user.id)
+      user = Accounts.get_user!(user.id) |> Repo.preload(:invite)
 
-      if invite.invitee_id != nil do
-        Repo.rollback(:invite_already_claimed)
-      else
-        invite
-        |> Repo.preload(:invitee)
-        |> Invite.changeset(%{})
-        |> Ecto.Changeset.put_assoc(:invitee, user)
-        |> Repo.update()
+      cond do
+        user.invite != nil ->
+          Repo.rollback(:user_already_invited)
+
+        invite.invitee_id != nil ->
+          Repo.rollback(:invite_already_claimed)
+
+        true ->
+          invite
+          |> Repo.preload(:invitee)
+          |> Invite.changeset(%{})
+          |> Ecto.Changeset.put_assoc(:invitee, user)
+          |> Repo.update()
       end
     end)
     |> case do

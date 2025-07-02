@@ -12,7 +12,7 @@ defmodule AnomaWeb.Api.Schemas do
       title: "Successful",
       type: :object,
       properties: %{},
-      example: %{success: true}
+      example: %{}
     })
   end
 

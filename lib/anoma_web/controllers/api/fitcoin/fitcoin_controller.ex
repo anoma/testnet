@@ -18,7 +18,7 @@ defmodule AnomaWeb.Api.FitcoinController do
     summary: "Add fitcoin to the account of the user",
     responses: %{
       400 => {"Generic error", "application/json", Api.Schemas.Error},
-      200 => {"Failure", "application/json", Api.Schemas.Success}
+      200 => {"Fitcoin balance", "application/json", Schemas.FitcoinBalance}
     }
 
   operation :balance,

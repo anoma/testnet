@@ -3,6 +3,6 @@ defmodule AnomaWeb.Api.FitcoinJSON do
   Render the fitcoin balance.
   """
   def balance(%{fitcoins: fitcoins}) do
-    %{success: true, fitcoins: fitcoins}
+    %{fitcoins: fitcoins}
   end
 end
