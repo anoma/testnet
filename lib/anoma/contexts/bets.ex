@@ -5,6 +5,7 @@ defmodule Anoma.Bets do
 
   import Ecto.Query, warn: false
 
+  alias Anoma.Accounts
   alias Anoma.Accounts.DailyPoints
   alias Anoma.Invites
   alias Anoma.Pricing.Bet
@@ -108,74 +109,108 @@ defmodule Anoma.Bets do
   end
 
   @doc """
+  Places a bet for a user with the given parameters.
+  """
+  def place_bet(user, up?, multiplier, points) do
+    # compute the required gas to place this bet
+    required_gas = (:math.pow(multiplier, 2) * 10) |> trunc()
+    required_points = points
+
+    Repo.transaction(fn ->
+      # fetch the user to get the latest points
+      user = Accounts.get_user!(user.id)
+
+      # make sure the user has all the required points and gas
+      cond do
+        required_gas > user.gas ->
+          Repo.rollback(:not_enough_gas)
+
+        required_points > user.points ->
+          Repo.rollback(:not_enough_points)
+
+        true ->
+          # deduct the points from the user
+          {:ok, user} =
+            Accounts.update_user(user, %{
+              points: user.points - required_points,
+              gas: user.gas - required_gas
+            })
+
+          # create the bet
+          {:ok, bet} =
+            create_bet(%{
+              user_id: user.id,
+              up: up?,
+              points: points,
+              multiplier: multiplier
+            })
+
+          bet
+      end
+    end)
+  end
+
+  @doc """
   I settle a bet if its possible.
   """
   def settle_bet(%Bet{} = bet) do
-    # fetch the user of the bet
     bet = Repo.preload(bet, :user)
+    user = bet.user
+    # if the user won, update their balance.
+    case won?(bet) do
+      {:ok, :won, profit} ->
+        {:ok, user} = Accounts.update_user(user, %{points: user.points + profit})
+        {:ok, bet} = update_bet(bet, %{settled: true})
+        {:ok, bet, :won}
 
-    case can_settle?(bet) do
-      {:ok, {price_at_bet, price_at_settle, settle_time}} ->
-        # check if this bet was won or lost.
-        won? =
-          case {price_at_bet > price_at_settle, bet.up} do
-            {true, true} ->
-              true
+      {:ok, :lost} ->
+        {:ok, bet} = update_bet(bet, %{settled: true})
+        {:ok, bet, :lost}
 
-            {false, false} ->
-              true
+      {:error, err} ->
+        {:error, err}
+    end
 
-            _ ->
-              false
-          end
+    # mark the transaction as settled
+  end
 
-        # compute the gas that this bet has cost.
-        gas_cost = :math.pow(bet.multiplier, 2) * 10
-        points_won = bet.points * bet.multiplier
+  # ----------------------------------------------------------------------------#
+  #                                Helpers                                     #
+  # ----------------------------------------------------------------------------#
 
-        Logger.debug("""
+  # check if the bet is won
+  @spec won?(Bet.t()) ::
+          {:ok, :won, number()} | {:ok, :lost} | {:error, :already_settled} | {:error, term()}
+  defp won?(bet) do
+    with bet <- Repo.preload(bet, :user),
+         {:ok, start_price, end_price} <- has_price_info?(bet) do
+      # calculate the profit
+      profit = (bet.multiplier + 1) * bet.points
 
-        Bet made at     #{bet.inserted_at}
-        Bet settle at   #{settle_time}
-        Price at bet    #{price_at_bet}
-        Price at settle #{price_at_settle}
-        Won? #{won?}
-        Won #{points_won} coins
-        """)
+      # check if the bet is won
+      cond do
+        bet.settled ->
+          {:error, :already_settled}
 
-        {:ok, won?, gas_cost, points_won}
+        bet.up and start_price < end_price ->
+          {:ok, :won, profit}
 
-      {:error, :no_price_information} ->
-        Logger.error("cannot settle bet")
-        {:error, :can_not_settle}
-
+        true ->
+          {:ok, :lost}
+      end
+    else
       {:error, err} ->
         {:error, err}
     end
   end
 
-  # check if there is enough pricing information to settle this bet
-  # and if the user has enough coins to make the bet
-  @spec can_settle?(Bet.t()) ::
-          {:error, :no_price_information} | {:ok, {float(), float(), DateTime.t()}}
-  defp can_settle?(bet) do
+  # check if there is enough price info to settle this bet
+  @spec has_price_info?(Bet.t()) :: {:ok, float(), float()} | {:error, :no_price_information}
+  defp has_price_info?(bet) do
     with %Currency{price: btc_price_at_bet} <- Anoma.Pricing.price_at("BTC-USD", bet.inserted_at),
          settle_time <- DateTime.add(bet.inserted_at, 1, :minute),
          %Currency{price: btc_price_now} <- Anoma.Pricing.price_at("BTC-USD", settle_time) do
-      # check that the user has enough coins to make this bet
-      required_points = bet.points
-      required_gas = :math.pow(bet.multiplier, 2) * 10
-
-      cond do
-        required_points > bet.user.points ->
-          {:error, :not_enough_points}
-
-        required_gas > bet.user.gas ->
-          {:error, :not_enough_gas}
-
-        true ->
-          {:ok, {btc_price_at_bet, btc_price_now, settle_time}}
-      end
+      {:ok, btc_price_at_bet, btc_price_now}
     else
       _ ->
         {:error, :no_price_information}

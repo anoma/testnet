@@ -12,7 +12,8 @@ defmodule Anoma.PricingFixtures do
       attrs
       |> Enum.into(%{
         currency: "some currency",
-        price: 120.5
+        price: 120.5,
+        timestamp: DateTime.utc_now()
       })
       |> Anoma.Pricing.create_currency()
 

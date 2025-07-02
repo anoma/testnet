@@ -21,7 +21,7 @@ defmodule Anoma.PricingTest do
     end
 
     test "create_currency/1 with valid data creates a currency" do
-      valid_attrs = %{currency: "some currency", price: 120.5}
+      valid_attrs = %{currency: "some currency", price: 120.5, timestamp: DateTime.utc_now()}
 
       assert {:ok, %Currency{} = currency} = Pricing.create_currency(valid_attrs)
       assert currency.currency == "some currency"

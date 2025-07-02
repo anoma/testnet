@@ -8,6 +8,7 @@ defmodule Anoma.Pricing.Currency do
   schema "currencies" do
     field :currency, :string
     field :price, :float
+    field :timestamp, :utc_datetime
 
     timestamps(type: :utc_datetime)
   end
@@ -15,7 +16,7 @@ defmodule Anoma.Pricing.Currency do
   @doc false
   def changeset(currency, attrs) do
     currency
-    |> cast(attrs, [:price, :currency])
-    |> validate_required([:price, :currency])
+    |> cast(attrs, [:price, :currency, :timestamp])
+    |> validate_required([:price, :currency, :timestamp])
   end
 end

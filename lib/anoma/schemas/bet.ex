@@ -16,7 +16,7 @@ defmodule Anoma.Pricing.Bet do
   @doc false
   def changeset(bet, attrs) do
     bet
-    |> cast(attrs, [:up, :multiplier, :points, :user_id])
+    |> cast(attrs, [:up, :multiplier, :points, :user_id, :inserted_at])
     |> validate_required([:up, :multiplier, :points, :user_id])
   end
 end
