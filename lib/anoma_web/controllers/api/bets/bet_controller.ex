@@ -3,12 +3,13 @@ defmodule AnomaWeb.Api.BetController do
 
   require Logger
 
-  alias AnomaWeb.ApiSpec.Schemas.JsonError
   alias Anoma.Bets
+  alias AnomaWeb.Api
   alias AnomaWeb.Api.BetController.Schemas
 
-  action_fallback AnomaWeb.FallbackController
   use OpenApiSpex.ControllerSpecs
+
+  action_fallback AnomaWeb.FallbackController
 
   tags ["Bets"]
 
@@ -18,7 +19,7 @@ defmodule AnomaWeb.Api.BetController do
     request_body: {"Bet Request", "application/json", Schemas.BetRequest},
     responses: %{
       200 => {"Bet", "application/json", Anoma.Pricing.Bet},
-      400 => {"Generic error", "application/json", JsonError}
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
   @doc """

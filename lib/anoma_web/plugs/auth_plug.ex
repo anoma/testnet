@@ -15,7 +15,7 @@ defmodule AnomaWeb.Plugs.AuthPlug do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    if Mix.env() == :dev do
+    if Application.get_env(:anoma, :debug_auth) do
       conn
       |> assign(:invited?, true)
       |> assign(:current_user, Accounts.list_users() |> Enum.sort_by(& &1.id) |> hd())

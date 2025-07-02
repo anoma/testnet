@@ -4,26 +4,29 @@ defmodule AnomaWeb.ErrorJSON do
 
   See config/config.exs.
   """
+  def render("400.json", _assigns) do
+    %{error: "bad request"}
+  end
+
   def render("401.json", %{error: error}) do
-    %{success: false, error: error}
+    %{error: error}
   end
 
   def render("404.json", _) do
-    %{success: false, error: "not found"}
+    %{error: "not found"}
   end
 
   def render("422.json", %{error: error}) do
-    %{success: false, error: error}
+    %{error: error}
   end
 
   def render("500.json", %{error: error}) do
-    %{success: false, error: error}
+    %{error: error}
   end
 
   def render(template, _assigns) do
     %{
-      success: false,
-      errors: %{detail: Phoenix.Controller.status_message_from_template(template)}
+      error: Phoenix.Controller.status_message_from_template(template)
     }
   end
 end

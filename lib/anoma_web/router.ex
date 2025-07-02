@@ -37,8 +37,6 @@ defmodule AnomaWeb.Router do
   # /api/v1
   scope "/api/v1", AnomaWeb.Api do
     pipe_through :api
-    # trade a code and code_verifier for a token and user
-    post "/user/auth", UserController, :auth
     # authenticate with MetaMask signature
     post "/user/metamask-auth", UserController, :metamask_auth
   end
@@ -49,9 +47,9 @@ defmodule AnomaWeb.Router do
 
     # /api/v1/user
     scope "/user" do
-      post "/ethereum-address", UserController, :update_eth_address
-      get "/daily-points", UserController, :daily_points
-      post "/claim-daily-point", UserController, :claim_point
+      # get "/daily-points", UserController, :daily_points
+      # post "/claim-daily-point", UserController, :claim_point
+      get "/", UserController, :profile
     end
 
     # /api/v1/fitcoin
@@ -69,7 +67,7 @@ defmodule AnomaWeb.Router do
     # /api/v1/invite
     scope "/invite" do
       get "/", InviteController, :list_invites
-      put "/redeem/:invite_code", InviteController, :redeem_invite
+      put "/redeem", InviteController, :redeem_invite
     end
 
     # /api/v1/bet

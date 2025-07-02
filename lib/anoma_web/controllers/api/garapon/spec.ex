@@ -1,4 +1,4 @@
-defmodule AnomaWeb.Api.FitcoinController do
+defmodule AnomaWeb.Api.GaraponController do
   use AnomaWeb, :controller
 
   require Logger
@@ -11,7 +11,7 @@ defmodule AnomaWeb.Api.FitcoinController do
 
   use OpenApiSpex.ControllerSpecs
 
-  tags ["Fitcoins"]
+  tags ["Garapon"]
 
   operation :add,
     security: [%{"authorization" => []}],

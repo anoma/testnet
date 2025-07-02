@@ -9,7 +9,10 @@ import Config
 
 config :anoma,
   ecto_repos: [Anoma.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  children: [Anoma.Scheduler, Anoma.Coinbase],
+  debug_auth: false,
+  promex: true
 
 # Configures the endpoint
 config :anoma, AnomaWeb.Endpoint,

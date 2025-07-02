@@ -2,6 +2,11 @@ import Config
 
 # Configure your database
 #
+config :anoma,
+  children: [],
+  debug_auth: false,
+  promex: false
+
 # The MIX_TEST_PARTITION environment variable can be used
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.

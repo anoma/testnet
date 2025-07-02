@@ -3,10 +3,7 @@ defmodule AnomaWeb.Api.InviteController do
 
   alias Anoma.Accounts.Invite
   alias Anoma.Invites
-  alias AnomaWeb.ApiSpec.Schemas.JsonError
-  alias AnomaWeb.ApiSpec.Schemas.JsonSuccess
-  alias OpenApiSpex.Operation
-  alias OpenApiSpex.Schema
+  alias AnomaWeb.Api
   alias AnomaWeb.Api.InviteController.Schemas
 
   action_fallback AnomaWeb.FallbackController
@@ -20,37 +17,16 @@ defmodule AnomaWeb.Api.InviteController do
     summary: "Redeem an invite code",
     request_body: {"Invite Redeem Request", "application/json", Schemas.RedeemRequest},
     responses: %{
-      401 => Operation.response("Failure", "application/json", JsonError),
-      200 => Operation.response("Failure", "application/json", JsonSuccess)
+      400 => {"Generic error", "application/json", Api.Schemas.Error},
+      200 => {"Invite redeemed", "application/json", Api.Schemas.Success}
     }
 
   operation :list_invites,
     security: [%{"authorization" => []}],
     summary: "List invites",
-    request_body: {},
     responses: %{
-      200 =>
-        {"success", "application/json",
-         %Schema{
-           type: :object,
-           properties: %{
-             invites: %Schema{
-               type: :array,
-               items: %Schema{
-                 type: :object,
-                 properties: %{
-                   code: %Schema{type: :string, description: "invite code", example: "INVITEXYZ"},
-                   claimed?: %Schema{
-                     type: :bool,
-                     description: "invite claimed or not",
-                     example: false
-                   }
-                 }
-               }
-             }
-           }
-         }},
-      400 => {"Failed to authenticate", "application/json", JsonError}
+      200 => {"List of invites", "application/json", Schemas.InviteList},
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
   @doc """

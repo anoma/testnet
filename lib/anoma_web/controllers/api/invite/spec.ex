@@ -15,23 +15,13 @@ defmodule AnomaWeb.Api.InviteController.Schemas do
     })
   end
 
-  defmodule CouponList do
+  defmodule InviteList do
     @moduledoc false
     require OpenApiSpex
 
     OpenApiSpex.schema(%{
       type: :object,
-      properties: %{coupons: %Schema{type: :array, items: Anoma.Accounts.Coupon}}
-    })
-  end
-
-  defmodule FitcoinBalance do
-    @moduledoc false
-    require OpenApiSpex
-
-    OpenApiSpex.schema(%{
-      type: :object,
-      properties: %{fitcoins: %Schema{type: :integer}}
+      properties: %{invites: %Schema{type: :array, items: Anoma.Accounts.Invite}}
     })
   end
 end

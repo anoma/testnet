@@ -10,46 +10,30 @@ defmodule Anoma.Application do
 
   @impl true
   def start(_type, _args) do
-    prod_children = [
-      Anoma.PromEx,
-      Anoma.Scheduler,
-      Anoma.Coinbase
-    ]
-
-    dev_children = [
-      Anoma.Scheduler
-      # Anoma.Coinbase
-    ]
-
-    default_children = [
-      AnomaWeb.Telemetry,
-      Anoma.Repo,
-      {DNSCluster, query: Application.get_env(:anoma, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: Anoma.PubSub},
-      # Start a worker by calling: Anoma.Worker.start_link(arg)
-      # {Anoma.Worker, arg},
-      # Start to serve requests, typically the last entry
-      AnomaWeb.Endpoint,
-      {EctoWatch,
-       repo: Anoma.Repo,
-       pub_sub: Anoma.PubSub,
-       watchers: [
-         {DailyPoint, :inserted},
-         {User, :updated}
-       ]}
-    ]
-
     children =
-      case Mix.env() do
-        :dev ->
-          default_children ++ dev_children
-
-        :prod ->
-          default_children ++ prod_children
-
-        _ ->
-          default_children
-      end
+      if Application.get_env(:anoma, :promex) do
+        [Anoma.PromEx]
+      else
+        []
+      end ++
+        [
+          AnomaWeb.Telemetry,
+          Anoma.Repo,
+          {DNSCluster, query: Application.get_env(:anoma, :dns_cluster_query) || :ignore},
+          {Phoenix.PubSub, name: Anoma.PubSub},
+          # Start a worker by calling: Anoma.Worker.start_link(arg)
+          # {Anoma.Worker, arg},
+          # Start to serve requests, typically the last entry
+          AnomaWeb.Endpoint,
+          {EctoWatch,
+           repo: Anoma.Repo,
+           pub_sub: Anoma.PubSub,
+           watchers: [
+             {DailyPoint, :inserted},
+             {User, :updated}
+           ]}
+        ] ++
+        Application.get_env(:anoma, :children)
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

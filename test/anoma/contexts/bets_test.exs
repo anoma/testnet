@@ -1,8 +1,8 @@
 defmodule Anoma.BetsTest do
   use Anoma.DataCase
 
-  alias Anoma.Bets
   alias Anoma.Accounts
+  alias Anoma.Bets
 
   import Anoma.BetsFixtures
   import Anoma.AccountsFixtures

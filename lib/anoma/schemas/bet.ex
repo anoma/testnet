@@ -1,4 +1,7 @@
 defmodule Anoma.Pricing.Bet do
+  @moduledoc """
+  Represent a bet that can be placed on the bitcoin price.
+  """
   use Ecto.Schema
   use TypedEctoSchema
   import Ecto.Changeset

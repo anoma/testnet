@@ -4,8 +4,7 @@ defmodule AnomaWeb.Api.CouponController do
   require Logger
 
   alias Anoma.Accounts.Coupons
-  alias AnomaWeb.ApiSpec.Schemas.JsonError
-  alias AnomaWeb.ApiSpec.Schemas.JsonSuccess
+  alias AnomaWeb.Api
   alias AnomaWeb.Api.CouponController.Schemas
 
   action_fallback AnomaWeb.FallbackController
@@ -18,7 +17,7 @@ defmodule AnomaWeb.Api.CouponController do
     summary: "List of available coupons",
     responses: %{
       200 => {"List of Coupons", "application/json", Schemas.CouponList},
-      400 => {"Generic error", "application/json", JsonError}
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
   operation :use,
@@ -26,8 +25,8 @@ defmodule AnomaWeb.Api.CouponController do
     summary: "Redeem a coupon",
     request_body: {"Coupon Redeem Request", "application/json", Schemas.RedeemRequest},
     responses: %{
-      200 => {"Coupon used", "application/json", JsonSuccess},
-      400 => {"Generic error", "application/json", JsonError}
+      400 => {"Generic error", "application/json", Api.Schemas.Error},
+      200 => {"Failure", "application/json", Api.Schemas.Success}
     }
 
   @doc """

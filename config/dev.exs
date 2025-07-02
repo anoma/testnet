@@ -1,5 +1,9 @@
 import Config
 
+config :anoma,
+  children: [Anoma.Scheduler],
+  debug_auth: true
+
 # Configure your database
 config :anoma, Anoma.Repo,
   username: "postgres",

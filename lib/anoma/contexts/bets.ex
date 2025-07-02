@@ -6,6 +6,7 @@ defmodule Anoma.Bets do
   import Ecto.Query, warn: false
 
   alias Anoma.Accounts
+  alias Anoma.Accounts.User
   alias Anoma.Pricing.Bet
   alias Anoma.Pricing.Currency
   alias Anoma.Repo

@@ -14,7 +14,7 @@ defmodule AnomaWeb.UserControllerTest do
     conn =
       post(conn, ~p"/api/v1/user/auth", %{code: "foobar", code_verifier: "barbar"})
 
-    assert %{"success" => false, "error" => "code_exchange_failed"} = json_response(conn, 500)
+    assert %{"error" => "code_exchange_failed"} = json_response(conn, 500)
     # assert %{"success" => true} = json_response(conn, 200)
 
     # # check that the user's ethereum address was updated
@@ -35,7 +35,7 @@ defmodule AnomaWeb.UserControllerTest do
         address: "0x1234567890abcdef1234567890abcdef12345678"
       })
 
-    assert %{"success" => true} = json_response(conn, 200)
+    assert %{} = json_response(conn, 200)
 
     # check that the user's ethereum address was updated
     user = Accounts.get_user!(user.id)
