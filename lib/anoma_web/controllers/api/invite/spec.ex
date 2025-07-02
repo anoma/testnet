@@ -11,7 +11,9 @@ defmodule AnomaWeb.Api.InviteController.Schemas do
     OpenApiSpex.schema(%{
       title: "Invite Request",
       type: :object,
-      properties: %{invite_code: %Schema{type: :string, description: "Invite code", example: "LETMEIN"}}
+      properties: %{
+        invite_code: %Schema{type: :string, description: "Invite code", example: "LETMEIN"}
+      }
     })
   end
 

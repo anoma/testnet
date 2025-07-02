@@ -10,6 +10,10 @@ defmodule AnomaWeb.Api.CouponController do
   action_fallback AnomaWeb.FallbackController
 
   use OpenApiSpex.ControllerSpecs
+
+  # ----------------------------------------------------------------------------
+  # OpenAPI Spec
+
   tags ["Daily Coupons"]
 
   operation :list,
@@ -28,6 +32,9 @@ defmodule AnomaWeb.Api.CouponController do
       400 => {"Generic error", "application/json", Api.Schemas.Error},
       200 => {"Failure", "application/json", Api.Schemas.Success}
     }
+
+  # ----------------------------------------------------------------------------
+  # Actions
 
   @doc """
   Returns the list of coupons.

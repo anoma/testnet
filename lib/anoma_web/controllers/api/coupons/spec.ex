@@ -11,7 +11,13 @@ defmodule AnomaWeb.Api.CouponController.Schemas do
     OpenApiSpex.schema(%{
       title: "Coupon redeem request",
       type: :object,
-      properties: %{id: %Schema{type: :integer, description: "Coupon ID", example: "18d3bb76-2e27-4cd0-9912-b8b259bd3950"}}
+      properties: %{
+        id: %Schema{
+          type: :integer,
+          description: "Coupon ID",
+          example: "18d3bb76-2e27-4cd0-9912-b8b259bd3950"
+        }
+      }
     })
   end
 

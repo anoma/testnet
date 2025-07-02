@@ -2,7 +2,6 @@ defmodule AnomaWeb.Api.InviteController do
   use AnomaWeb, :controller
 
   alias Anoma.Accounts.Invite
-  alias Anoma.Accounts
   alias Anoma.Invites
   alias AnomaWeb.Api
   alias AnomaWeb.Api.InviteController.Schemas
@@ -10,6 +9,9 @@ defmodule AnomaWeb.Api.InviteController do
   action_fallback AnomaWeb.FallbackController
 
   use OpenApiSpex.ControllerSpecs
+
+  # ----------------------------------------------------------------------------
+  # OpenAPI Spec
 
   tags ["Invites"]
 
@@ -29,6 +31,9 @@ defmodule AnomaWeb.Api.InviteController do
       200 => {"List of invites", "application/json", Schemas.InviteList},
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
+
+  # ----------------------------------------------------------------------------
+  # Actions
 
   @doc """
   Lets a user claim an invite code

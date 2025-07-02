@@ -84,7 +84,7 @@ async function doMetaMaskLogin() {
     const address = accounts[0];
 
     // Create a message to sign
-    const message = `Welcome to Anoma Testnet!\n\nSign this message to authenticate with your wallet.\n\nAddress: ${address}\nNonce: ${Date.now()}`;
+    const message = `Welcome to Anoma Testnet! Sign this message to authenticate with your wallet. Address: ${address} Nonce: ${Date.now()}`;
 
     // Sign the message
     const signature = await window.ethereum.request({

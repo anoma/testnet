@@ -11,6 +11,9 @@ defmodule AnomaWeb.Api.FitcoinController do
 
   use OpenApiSpex.ControllerSpecs
 
+  # ----------------------------------------------------------------------------
+  # OpenAPI Spec
+
   tags ["Fitcoins"]
 
   operation :add,
@@ -28,6 +31,9 @@ defmodule AnomaWeb.Api.FitcoinController do
       200 => {"Fitcoin balance", "application/json", Schemas.FitcoinBalance},
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
+
+  # ----------------------------------------------------------------------------
+  # Actions
 
   @doc """
   Adds 1 fitcoin to the user's account.

@@ -19,7 +19,7 @@ defmodule AnomaWeb.Api.FitcoinControllerTest do
 
       conn = post(conn, ~p"/api/v1/fitcoin")
 
-      assert %{"success" => true, "fitcoins" => 6} = json_response(conn, 200)
+      assert %{"fitcoins" => 6} = json_response(conn, 200)
 
       # verify the user's fitcoin balance was updated in the database
       updated_user = Accounts.get_user!(user.id)
@@ -34,7 +34,7 @@ defmodule AnomaWeb.Api.FitcoinControllerTest do
 
       conn = post(conn, ~p"/api/v1/fitcoin")
 
-      assert %{"success" => true, "fitcoins" => 1} = json_response(conn, 200)
+      assert %{"fitcoins" => 1} = json_response(conn, 200)
 
       updated_user = Accounts.get_user!(user.id)
       assert updated_user.fitcoins == 1
@@ -48,7 +48,7 @@ defmodule AnomaWeb.Api.FitcoinControllerTest do
 
       conn = post(conn, ~p"/api/v1/fitcoin")
 
-      assert %{"success" => true, "fitcoins" => 1} = json_response(conn, 200)
+      assert %{"fitcoins" => 1} = json_response(conn, 200)
 
       updated_user = Accounts.get_user!(user.id)
       assert updated_user.fitcoins == 1
@@ -78,7 +78,7 @@ defmodule AnomaWeb.Api.FitcoinControllerTest do
 
       conn = get(conn, ~p"/api/v1/fitcoin/balance")
 
-      assert %{"success" => true, "fitcoins" => 10} = json_response(conn, 200)
+      assert %{"fitcoins" => 10} = json_response(conn, 200)
     end
 
     test "returns zero balance for user with nil fitcoins", %{conn: conn} do
@@ -89,7 +89,7 @@ defmodule AnomaWeb.Api.FitcoinControllerTest do
 
       conn = get(conn, ~p"/api/v1/fitcoin/balance")
 
-      assert %{"success" => true, "fitcoins" => 0} = json_response(conn, 200)
+      assert %{"fitcoins" => 0} = json_response(conn, 200)
     end
 
     test "returns zero balance for user with zero fitcoins", %{conn: conn} do
@@ -100,7 +100,7 @@ defmodule AnomaWeb.Api.FitcoinControllerTest do
 
       conn = get(conn, ~p"/api/v1/fitcoin/balance")
 
-      assert %{"success" => true, "fitcoins" => 0} = json_response(conn, 200)
+      assert %{"fitcoins" => 0} = json_response(conn, 200)
     end
 
     test "returns 401 when user is not authenticated", %{conn: conn} do

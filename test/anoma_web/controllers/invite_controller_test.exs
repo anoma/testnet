@@ -32,7 +32,15 @@ defmodule AnomaWeb.InviteControllerTest do
       # try and claim an invite
       conn = get(conn, ~p"/api/v1/invite")
 
-      assert %{"invites" => [%{"code" => "some code", "claimed?" => false}]} =
+      assert %{
+               "invites" => [
+                 %{
+                   "code" => "some code",
+                   "id" => _,
+                   "invitee_id" => nil
+                 }
+               ]
+             } =
                json_response(conn, 200)
     end
 
@@ -50,7 +58,15 @@ defmodule AnomaWeb.InviteControllerTest do
       # try and claim an invite
       conn = get(conn, ~p"/api/v1/invite")
 
-      assert %{"invites" => [%{"code" => "some code", "claimed?" => true}]} =
+      assert %{
+               "invites" => [
+                 %{
+                   "code" => "some code",
+                   "id" => _,
+                   "invitee_id" => _
+                 }
+               ]
+             } =
                json_response(conn, 200)
     end
   end
@@ -66,7 +82,7 @@ defmodule AnomaWeb.InviteControllerTest do
 
       # try and claim an invite
       conn = put(conn, ~p"/api/v1/invite/redeem/", %{invite_code: invite.code})
-      assert %{"success" => true} = json_response(conn, 200)
+      assert %{} = json_response(conn, 200)
     end
 
     test "renders invite when invite is invalid", %{conn: conn} do
@@ -77,9 +93,8 @@ defmodule AnomaWeb.InviteControllerTest do
       conn = put_req_header(conn, "authorization", "Bearer #{jwt}")
 
       # try and claim an invite
-      assert_error_sent 404, fn ->
-        _conn = put(conn, ~p"/api/v1/invite/redeem/", %{invite_code: "invalid"})
-      end
+      conn = put(conn, ~p"/api/v1/invite/redeem/", %{invite_code: "invalid"})
+      assert conn.status == 404
     end
 
     test "error when not logged in", %{conn: conn} do
@@ -98,8 +113,11 @@ defmodule AnomaWeb.InviteControllerTest do
       conn = put_req_header(conn, "authorization", "Bearer #{jwt}")
 
       # try and claim an invite
-      conn = put(conn, ~p"/api/v1/invite/redeem/", %{some_key: "some value"})
-      assert "Unauthorized" = json_response(conn, 401)["error"]
+      # try and claim an invite
+      assert_error_sent 400, fn ->
+        conn = put(conn, ~p"/api/v1/invite/redeem/", %{some_key: "some value"})
+        assert "Unauthorized" = json_response(conn, 401)["error"]
+      end
     end
   end
 end

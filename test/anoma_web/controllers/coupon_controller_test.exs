@@ -46,9 +46,9 @@ defmodule AnomaWeb.Api.CouponControllerTest do
       conn = put_req_header(conn, "authorization", "Bearer #{jwt}")
 
       # list the coupons, except empty
-      conn = put(conn, ~p"/api/v1/coupons/use/#{coupon.id}")
+      conn = put(conn, ~p"/api/v1/coupons/use/", %{id: coupon.id})
 
-      assert %{"success" => true} == json_response(conn, 200)
+      assert %{} == json_response(conn, 200)
     end
 
     test "use a coupon does not work for another users coupon", %{conn: conn} do
@@ -61,9 +61,9 @@ defmodule AnomaWeb.Api.CouponControllerTest do
       conn = put_req_header(conn, "authorization", "Bearer #{jwt}")
 
       # list the coupons, except empty
-      conn = put(conn, ~p"/api/v1/coupons/use/#{coupon.id}")
+      conn = put(conn, ~p"/api/v1/coupons/use/", %{id: coupon.id})
 
-      assert %{"success" => false, "error" => "invalid coupon"} == json_response(conn, 401)
+      assert %{"error" => "invalid coupon"} == json_response(conn, 401)
     end
   end
 end

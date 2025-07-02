@@ -7,7 +7,7 @@ defmodule AnomaWeb.FallbackController do
   use AnomaWeb, :controller
 
   def call(conn, assigns) do
-    IO.inspect(assigns, label: "call fallback")
+    # IO.inspect(assigns, label: "call fallback")
     _call(conn, assigns)
   end
 
@@ -22,6 +22,13 @@ defmodule AnomaWeb.FallbackController do
 
   # This clause is an example of how to handle resources that cannot be found.
   def _call(conn, {:error, :not_found}) do
+    conn
+    |> put_status(:not_found)
+    |> put_view(html: AnomaWeb.ErrorHTML, json: AnomaWeb.ErrorJSON)
+    |> render(:"401")
+  end
+
+  def _call(conn, {:error, :invite_not_found}) do
     conn
     |> put_status(:not_found)
     |> put_view(html: AnomaWeb.ErrorHTML, json: AnomaWeb.ErrorJSON)

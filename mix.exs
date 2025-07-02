@@ -56,7 +56,9 @@ defmodule Anoma.MixProject do
       {:quantum, "~> 3.5.3"},
       {:cors_plug, "~> 3.0"},
       {:websockex, "~> 0.4.3"},
-      {:prom_ex, "~> 1.11.0"}
+      {:prom_ex, "~> 1.11.0"},
+      {:ex_keccak, "~> 0.7.6"},
+      {:ex_secp256k1, "~> 0.7.4"}
     ]
   end
 

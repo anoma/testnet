@@ -25,6 +25,9 @@ defmodule AnomaWeb.Api.BetController do
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
+  # ----------------------------------------------------------------------------
+  # Actions
+
   @doc """
   Lets a user place a bet.
   """
