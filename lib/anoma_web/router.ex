@@ -73,6 +73,7 @@ defmodule AnomaWeb.Router do
     # /api/v1/bet
     scope "/bet" do
       post "/place", BetController, :place
+      get "/", BetController, :list
       get "/:id", BetController, :get
     end
   end

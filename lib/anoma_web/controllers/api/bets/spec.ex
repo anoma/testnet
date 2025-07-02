@@ -25,4 +25,14 @@ defmodule AnomaWeb.Api.BetController.Schemas do
 
     OpenApiSpex.schema(%{type: :string, description: "Bet ID", example: "1234-5678-9101-1121"})
   end
+
+  defmodule BetList do
+    @moduledoc false
+    require OpenApiSpex
+
+    OpenApiSpex.schema(%{
+      type: :object,
+      properties: %{bets: %Schema{type: :array, items: Anoma.Pricing.Bet}}
+    })
+  end
 end

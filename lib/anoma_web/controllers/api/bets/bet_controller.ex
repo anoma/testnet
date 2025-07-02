@@ -5,7 +5,6 @@ defmodule AnomaWeb.Api.BetController do
 
   alias Anoma.Bets
   alias Anoma.Pricing.Bet
-  alias Anoma.Accounts
   alias AnomaWeb.Api
   alias AnomaWeb.Api.BetController.Schemas
 
@@ -30,11 +29,19 @@ defmodule AnomaWeb.Api.BetController do
   operation :get,
     security: [%{"authorization" => []}],
     summary: "Get the information about a bet",
-        parameters: [
+    parameters: [
       id: [in: :path, schema: Schemas.BetDetailsRequest]
     ],
     responses: %{
       200 => {"Bet", "application/json", Anoma.Pricing.Bet},
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
+    }
+
+  operation :list,
+    security: [%{"authorization" => []}],
+    summary: "Get all the user's bets",
+    responses: %{
+      200 => {"Bets", "application/json", Schemas.BetList},
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
@@ -57,12 +64,10 @@ defmodule AnomaWeb.Api.BetController do
   Lets a user place a bet.
   """
   @spec get(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def get(conn, params = %{"id" => bet_id}) do
-    IO.inspect params
+  def get(conn, %{"id" => bet_id}) do
     conn.assigns.current_user
     |> Anoma.Repo.preload(:bets)
     |> Map.get(:bets)
-    |> tap(&IO.inspect(&1, label: "bets"))
     |> Enum.find(&(&1.id == bet_id))
     |> case do
       %Bet{} = bet ->
@@ -71,5 +76,17 @@ defmodule AnomaWeb.Api.BetController do
       _ ->
         {:error, :bet_not_found}
     end
+  end
+
+  @doc """
+  Lets a user place a bet.
+  """
+  @spec list(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def list(conn, _params) do
+    user =
+      conn.assigns.current_user
+      |> Anoma.Repo.preload(:bets)
+
+    render(conn, :bets, bets: user.bets)
   end
 end
