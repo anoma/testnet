@@ -26,9 +26,9 @@ defmodule Anoma.Pricing.Bet do
     example: %{
       "id" => "18d3bb76-2e27-4cd0-9912-b8b259bd3950",
       "up" => true,
-      "user_id" => "296d3862-d189-4add-ada5-b346b1df406a",
       "points" => 1,
       "multiplier" => 1,
+      "user_id" => "296d3862-d189-4add-ada5-b346b1df406a",
       "settled" => false
     },
     "x-struct": __MODULE__
@@ -39,7 +39,7 @@ defmodule Anoma.Pricing.Bet do
   # ----------------------------------------------------------------------------
   # Schema
 
-  @json_fields [:__meta__, :__struct__, :user, :inserted_at, :updated_at, :user_id]
+  @json_fields [:__meta__, :__struct__, :user, :inserted_at, :updated_at]
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 

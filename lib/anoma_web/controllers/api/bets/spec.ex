@@ -12,7 +12,7 @@ defmodule AnomaWeb.Api.BetController.Schemas do
       title: "Bet Request",
       type: :object,
       properties: %{
-        id: %Schema{type: :integer, description: "Bet ID"},
+        up?: %Schema{type: :boolean, description: "Will bitcoin go up?"},
         leverage: %Schema{type: :integer, description: "Leverage multiplier", example: 1},
         points: %Schema{type: :integer, description: "Points to bet", example: 123}
       }

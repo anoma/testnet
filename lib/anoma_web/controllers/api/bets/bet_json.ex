@@ -3,6 +3,6 @@ defmodule AnomaWeb.Api.BetJSON do
   Render the placed bet
   """
   def place(%{bet: bet}) do
-    %{bet: bet}
+    bet
   end
 end

@@ -7,7 +7,7 @@ defmodule AnomaWeb.FallbackController do
   use AnomaWeb, :controller
 
   def call(conn, assigns) do
-    # IO.inspect(assigns, label: "call fallback")
+    IO.inspect(assigns, label: "call fallback")
     _call(conn, assigns)
   end
 

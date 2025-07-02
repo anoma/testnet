@@ -11,6 +11,9 @@ defmodule AnomaWeb.Api.BetController do
 
   action_fallback AnomaWeb.FallbackController
 
+  # ----------------------------------------------------------------------------
+  # OpenAPI Spec
+
   tags ["Bets"]
 
   operation :place,
@@ -28,7 +31,9 @@ defmodule AnomaWeb.Api.BetController do
   @spec place(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def place(conn, %{"up?" => up?, "leverage" => mutliplier, "points" => points}) do
     user = conn.assigns.current_user
-    {:ok, bet} = Bets.place_bet(user, up?, mutliplier, points)
-    render(conn, :place, bet: bet)
+
+    with {:ok, bet} <- Bets.place_bet(user, up?, mutliplier, points) do
+      render(conn, :place, bet: bet)
+    end
   end
 end

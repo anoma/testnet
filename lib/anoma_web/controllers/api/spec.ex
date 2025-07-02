@@ -11,9 +11,7 @@ defmodule AnomaWeb.Api.Schemas do
     OpenApiSpex.schema(%{
       title: "Successful",
       type: :object,
-      properties: %{
-        success: %Schema{type: :boolean, description: "success message", example: true}
-      },
+      properties: %{},
       example: %{success: true}
     })
   end
@@ -26,9 +24,8 @@ defmodule AnomaWeb.Api.Schemas do
       title: "Generic Error",
       type: :object,
       properties: %{
-        success: %Schema{type: :boolean, description: "error state", example: false}
-      },
-      example: %{success: false}
+        error: %Schema{type: :string, description: "error message", example: "unauthorized"}
+      }
     })
   end
 end
