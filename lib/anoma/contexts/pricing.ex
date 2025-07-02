@@ -62,8 +62,8 @@ defmodule Anoma.Pricing do
   def price_at(currency, timestamp) do
     from(c in Currency,
       where: c.currency == ^currency,
-      where: c.inserted_at >= ^timestamp,
-      order_by: {:asc, c.inserted_at},
+      where: c.timestamp >= ^timestamp,
+      order_by: {:asc, c.timestamp},
       limit: 1
     )
     |> Repo.one()

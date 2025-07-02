@@ -3,7 +3,9 @@ defmodule Anoma.Coinbase do
   I implement a websocket connection to listen for events from the Coinbase websocket.
   """
   use WebSockex
+  require Logger
 
+  # use the sandbox during dev because the api is not free
   if Mix.env() == :prod do
     @url "wss://ws-feed.exchange.coinbase.com"
   else
@@ -20,6 +22,7 @@ defmodule Anoma.Coinbase do
   end
 
   def handle_frame({_type, msg}, state) do
+    Logger.debug(msg)
     process_message(msg)
     {:ok, state}
   end
@@ -37,7 +40,7 @@ defmodule Anoma.Coinbase do
       {:ok, %{product_id: ticker, price: price}} ->
         {price, ""} = Float.parse(price)
 
-      # Anoma.Pricing.create_currency(%{currency: ticker, price: price})
+        Anoma.Pricing.create_currency(%{currency: ticker, price: price})
 
       _ ->
         :noop

@@ -10,9 +10,15 @@ defmodule Anoma.Application do
 
   @impl true
   def start(_type, _args) do
-    other_children = [
+    prod_children = [
+      Anoma.PromEx,
       Anoma.Scheduler,
       Anoma.Coinbase
+    ]
+
+    dev_children = [
+      Anoma.Scheduler
+      # Anoma.Coinbase
     ]
 
     default_children = [
@@ -30,14 +36,16 @@ defmodule Anoma.Application do
        watchers: [
          {DailyPoint, :inserted},
          {User, :updated}
-       ]},
-      Anoma.PromEx
+       ]}
     ]
 
     children =
       case Mix.env() do
-        x when x in [:dev, :prod] ->
-          default_children ++ other_children
+        :dev ->
+          default_children ++ dev_children
+
+        :prod ->
+          default_children ++ prod_children
 
         _ ->
           default_children
