@@ -40,6 +40,7 @@ defmodule AnomaWeb.Endpoint do
   end
 
   plug Plug.RequestId
+  plug AnomaWeb.Plugs.HealthCheck
   plug PromEx.Plug, prom_ex_module: Anoma.PromEx
 
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
