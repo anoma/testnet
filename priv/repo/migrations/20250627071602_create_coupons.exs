@@ -1,4 +1,4 @@
-defmodule Anoma.Repo.Migrations.CreateCoupons do
+defmodule Anoma.Repo.Migrations.CreateGarapon do
   use Ecto.Migration
 
   def change do

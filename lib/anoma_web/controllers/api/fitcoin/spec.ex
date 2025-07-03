@@ -21,7 +21,7 @@ defmodule AnomaWeb.Api.FitcoinController.Schemas do
 
     OpenApiSpex.schema(%{
       type: :object,
-      properties: %{coupons: %Schema{type: :array, items: Anoma.Accounts.Coupon}}
+      properties: %{coupons: %Schema{type: :array, items: Anoma.Garapon.Coupon}}
     })
   end
 

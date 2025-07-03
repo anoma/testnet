@@ -1,12 +1,12 @@
-defmodule Anoma.Accounts.Coupons do
+defmodule Anoma.Garapon do
   @moduledoc """
-  The Accounts.Coupons context.
+  The Accounts.Garapon context.
   """
 
   import Ecto.Query, warn: false
   alias Anoma.Repo
 
-  alias Anoma.Accounts.Coupon
+  alias Anoma.Garapon.Coupon
   alias Anoma.Accounts.User
 
   @doc """

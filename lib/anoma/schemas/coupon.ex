@@ -1,4 +1,4 @@
-defmodule Anoma.Accounts.Coupon do
+defmodule Anoma.Garapon.Coupon do
   @moduledoc """
   Schema for a daily coupon that a user can use in the daily lottery.
   """
@@ -23,7 +23,7 @@ defmodule Anoma.Accounts.Coupon do
       "id" => "18d3bb76-2e27-4cd0-9912-b8b259bd3950",
       "used" => true
     },
-    "x-struct": Anoma.Accounts.Coupon
+    "x-struct": Anoma.Garapon.Coupon
   }
 
   def schema, do: @schema

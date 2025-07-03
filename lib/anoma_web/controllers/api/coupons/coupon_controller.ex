@@ -3,7 +3,7 @@ defmodule AnomaWeb.Api.CouponController do
 
   require Logger
 
-  alias Anoma.Accounts.Coupons
+  alias Anoma.Garapon
   alias AnomaWeb.Api
   alias AnomaWeb.Api.CouponController.Schemas
 
@@ -14,13 +14,13 @@ defmodule AnomaWeb.Api.CouponController do
   # ----------------------------------------------------------------------------
   # OpenAPI Spec
 
-  tags ["Daily Coupons"]
+  tags ["Daily Garapon"]
 
   operation :list,
     security: [%{"authorization" => []}],
     summary: "List of available coupons",
     responses: %{
-      200 => {"List of Coupons", "application/json", Schemas.CouponList},
+      200 => {"List of Garapon", "application/json", Schemas.CouponList},
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
@@ -42,7 +42,7 @@ defmodule AnomaWeb.Api.CouponController do
   @spec list(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def list(conn, %{}) do
     user = conn.assigns.current_user
-    coupons = Coupons.list_coupons(user)
+    coupons = Garapon.list_coupons(user)
 
     render(conn, :coupons, coupons: coupons)
   end
@@ -55,11 +55,11 @@ defmodule AnomaWeb.Api.CouponController do
     user = conn.assigns.current_user
 
     # make sure the coupon is owned by this user.
-    coupon = Coupons.get_coupon!(coupon_id)
+    coupon = Garapon.get_coupon!(coupon_id)
 
     # if this coupon is not owned by this user, can't consume it.
     if coupon.owner_id == user.id do
-      {:ok, coupon} = Coupons.use_coupon(coupon)
+      {:ok, coupon} = Garapon.use_coupon(coupon)
 
       render(conn, :use, coupon: coupon)
     else

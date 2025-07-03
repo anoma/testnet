@@ -17,7 +17,7 @@ end
 
 generate_coupon = fn user ->
   {:ok, coupon} =
-    Anoma.Accounts.Coupons.create_coupon(%{
+    Anoma.Garapon.create_coupon(%{
       owner_id: user.id,
       used: false
     })

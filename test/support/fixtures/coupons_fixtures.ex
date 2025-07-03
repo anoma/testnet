@@ -1,9 +1,9 @@
-defmodule Anoma.Accounts.CouponsFixtures do
+defmodule Anoma.GaraponFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `Anoma.Accounts.Coupons` context.
+  entities via the `Anoma.Garapon` context.
   """
-  alias Anoma.Accounts.Coupons
+  alias Anoma.Garapon
 
   @doc """
   Generate a coupon.
@@ -12,7 +12,7 @@ defmodule Anoma.Accounts.CouponsFixtures do
     {:ok, coupon} =
       attrs
       |> Enum.into(%{})
-      |> Coupons.create_coupon()
+      |> Garapon.create_coupon()
 
     coupon
   end
