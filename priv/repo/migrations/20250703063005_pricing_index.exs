@@ -6,6 +6,7 @@ defmodule Anoma.Repo.Migrations.PricingIndex do
     create index(:bets, [:settled])
 
     create index(:currencies, [:timestamp])
+    create unique_index(:currencies, [:timestamp, :currency])
 
     create index(:coupons, [:used])
 
