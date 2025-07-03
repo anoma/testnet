@@ -18,6 +18,8 @@ defmodule Anoma.Bitflip.Bet do
       id: %Schema{type: :integer, description: "Bet ID"},
       up: %Schema{type: :boolean, description: "Will the price go up?"},
       multiplier: %Schema{type: :integer, description: "Multiplier on the bet"},
+      price_at_bet: %Schema{type: :float, description: "Price when the bet was made"},
+      price_at_settle: %Schema{type: :float, description: "Price when the bet was settled"},
       points: %Schema{type: :integer, description: "Points bet"},
       settled: %Schema{type: :boolean, description: "Has the bet been settled?"},
       won: %Schema{type: :boolean, description: "Did the user win the bet?"},
@@ -34,6 +36,8 @@ defmodule Anoma.Bitflip.Bet do
       "up" => true,
       "points" => 1,
       "multiplier" => 1,
+      "price_at_bet" => 123.456,
+      "price_at_settle" => 123.456,
       "user_id" => "296d3862-d189-4add-ada5-b346b1df406a",
       "settled" => false,
       "won" => false,
@@ -58,6 +62,8 @@ defmodule Anoma.Bitflip.Bet do
     field :points, :integer
     field :settled, :boolean, default: false
     field :won, :boolean
+    field :price_at_bet, :float
+    field :price_at_settle, :float
     belongs_to :user, Anoma.Accounts.User
     timestamps(type: :utc_datetime)
   end
@@ -65,7 +71,17 @@ defmodule Anoma.Bitflip.Bet do
   @doc false
   def changeset(bet, attrs) do
     bet
-    |> cast(attrs, [:up, :multiplier, :points, :user_id, :inserted_at, :settled, :won])
+    |> cast(attrs, [
+      :up,
+      :multiplier,
+      :points,
+      :user_id,
+      :inserted_at,
+      :settled,
+      :won,
+      :price_at_bet,
+      :price_at_settle
+    ])
     |> validate_required([:up, :multiplier, :points, :user_id])
   end
 end

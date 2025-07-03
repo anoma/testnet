@@ -143,11 +143,17 @@ defmodule Anoma.Bitflip do
     required_points = points
 
     Repo.transaction(fn ->
+      # get the current bitcoin price
+      current_price = Anoma.Assets.price_at("BTC-USD", DateTime.utc_now())
+
       # fetch the user to get the latest points
       user = Accounts.get_user!(user.id)
 
       # make sure the user has all the required points and fitcoins
       cond do
+        current_price == nil ->
+          Repo.rollback(:no_pricing_information)
+
         required_fitcoins > user.fitcoins ->
           Repo.rollback(:not_enough_fitcoins)
 
@@ -168,7 +174,8 @@ defmodule Anoma.Bitflip do
               user_id: user.id,
               up: up?,
               points: points,
-              multiplier: multiplier
+              multiplier: multiplier,
+              price_at_bet: current_price.price
             })
 
           bet
@@ -187,15 +194,21 @@ defmodule Anoma.Bitflip do
     user = bet.user
     # if the user won, update their balance.
     case won?(bet) do
-      {:ok, :won, profit} ->
+      {:ok, :won, profit, price_at_settle} ->
         Logger.warning("bet won")
         {:ok, _user} = Accounts.add_points_to_user(user, profit)
-        {:ok, bet} = update_bet(bet, %{settled: true, won: true})
+
+        {:ok, bet} =
+          update_bet(bet, %{settled: true, won: true, price_at_settle: price_at_settle})
+
         {:ok, bet, :won}
 
-      {:ok, :lost} ->
+      {:ok, :lost, price_at_settle} ->
         Logger.warning("bet lost")
-        {:ok, bet} = update_bet(bet, %{settled: true, won: false})
+
+        {:ok, bet} =
+          update_bet(bet, %{settled: true, won: false, price_at_settle: price_at_settle})
+
         {:ok, bet, :lost}
 
       {:error, err} ->
@@ -212,10 +225,13 @@ defmodule Anoma.Bitflip do
 
   # check if the bet is won
   @spec won?(Bet.t()) ::
-          {:ok, :won, number()} | {:ok, :lost} | {:error, :already_settled} | {:error, term()}
+          {:ok, :won, number(), number()}
+          | {:ok, :lost, number()}
+          | {:error, :already_settled}
+          | {:error, term()}
   defp won?(bet) do
     with bet <- Repo.preload(bet, :user),
-         {:ok, start_price, end_price} <- has_price_info?(bet) do
+         {:ok, end_price} <- has_price_info?(bet) do
       # calculate the profit
       profit = (bet.multiplier + 1) * bet.points
 
@@ -224,11 +240,11 @@ defmodule Anoma.Bitflip do
         bet.settled ->
           {:error, :already_settled}
 
-        bet.up and start_price < end_price ->
-          {:ok, :won, profit}
+        bet.up and bet.price_at_bet < end_price ->
+          {:ok, :won, profit, end_price}
 
         true ->
-          {:ok, :lost}
+          {:ok, :lost, end_price}
       end
     else
       {:error, err} ->
@@ -237,12 +253,11 @@ defmodule Anoma.Bitflip do
   end
 
   # check if there is enough price info to settle this bet
-  @spec has_price_info?(Bet.t()) :: {:ok, float(), float()} | {:error, :no_price_information}
+  @spec has_price_info?(Bet.t()) :: {:ok, float()} | {:error, :no_price_information}
   defp has_price_info?(bet) do
-    with %Currency{price: btc_price_at_bet} <- Anoma.Assets.price_at("BTC-USD", bet.inserted_at),
-         settle_time <- DateTime.add(bet.inserted_at, 1, :minute),
+    with settle_time <- DateTime.add(bet.inserted_at, 1, :minute),
          %Currency{price: btc_price_now} <- Anoma.Assets.price_at("BTC-USD", settle_time) do
-      {:ok, btc_price_at_bet, btc_price_now}
+      {:ok, btc_price_now}
     else
       _ ->
         {:error, :no_price_information}
