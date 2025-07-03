@@ -240,12 +240,27 @@ defmodule Anoma.Accounts do
   """
   @spec add_points_to_user(User.t(), integer()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def add_points_to_user(%User{} = user, points) when is_integer(points) do
+
     current_points = user.points || 0
     new_points = current_points + points
 
-    user
-    |> User.changeset(%{points: new_points})
-    |> Repo.update()
+    Repo.transaction(fn ->
+      # preload the person who invited this user
+      user = Repo.preload(user, invite: :owner)
+
+      # add points to the user who invites this user if they exist
+      case user do
+        %{invite: %{owner: %User{}}} ->
+          add_points_to_user(user.invite.owner, trunc(points * 0.1))
+
+        _ ->
+          :noop
+      end
+
+      user
+      |> User.changeset(%{points: new_points})
+      |> Repo.update!()
+    end)
   end
 
   @doc """
@@ -313,6 +328,4 @@ defmodule Anoma.Accounts do
     |> User.changeset(attrs)
     |> Repo.insert()
   end
-
-
 end

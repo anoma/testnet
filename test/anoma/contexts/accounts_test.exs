@@ -3,6 +3,7 @@ defmodule Anoma.AccountsTest do
 
   alias Anoma.Accounts
   alias Anoma.Invites
+  alias Anoma.Invites.Invite
 
   describe "users" do
     alias Anoma.Accounts.User
@@ -97,6 +98,58 @@ defmodule Anoma.AccountsTest do
       assert {:ok, %User{} = updated_user} = Accounts.add_points_to_user(user, 0)
       assert updated_user.points == 100
       assert updated_user.id == user.id
+    end
+
+    test "add_points_to_user/2 adds points to the person who invited this user too" do
+      user = user_fixture(%{points: 0})
+      invited_user = user_fixture(%{points: 0})
+
+      # claim this invite by another user
+      invite = invite_fixture(%{owner_id: user.id})
+      assert {:ok, %Invite{} = _invite} = Invites.claim_invite(invite, invited_user)
+
+      # add points to the invited user
+      assert {:ok, %User{} = updated_user} = Accounts.add_points_to_user(invited_user, 10)
+      assert updated_user.points == 10
+      assert updated_user.id == invited_user.id
+
+      # the inviter has 1 point
+      user = Accounts.get_user!(user.id)
+      assert user.points == 1
+    end
+
+    test "add_points_to_user/2 adds points to the person who invited this user too, and their inviter too" do
+      # creeate a chain of users that each invite the next one
+      users = for _ <- 1..10, do: user_fixture(%{points: 0})
+
+      Enum.scan(users, fn invitee, inviter ->
+        # create an invite for the inviter
+        invite =
+          invite_fixture(%{
+            owner_id: inviter.id,
+            code: Base.encode16(:crypto.strong_rand_bytes(8))
+          })
+
+        # let the invitee use this invite
+        assert {:ok, %Invite{} = _invite} = Invites.claim_invite(invite, invitee)
+
+        invitee
+      end)
+
+      last_user = List.last(users)
+
+      # verify that each user
+      # add points to the invited user
+      assert {:ok, %User{} = updated_user} = Accounts.add_points_to_user(last_user, 1_000_000_000)
+      assert updated_user.points == 1_000_000_000
+      assert updated_user.id == last_user.id
+
+      # each user should have 10% of the points their inviter got
+      Enum.reduce(users, 1, fn user, expected_points ->
+        user = Accounts.get_user!(user.id)
+        assert user.points == expected_points
+        expected_points * 10
+      end)
     end
 
     test "update_user_eth_address/2 with different valid eth_address updates the user" do
