@@ -1,12 +1,12 @@
-defmodule Anoma.Pricing do
+defmodule Anoma.Assets do
   @moduledoc """
-  The Pricing context.
+  The Assets context.
   """
 
   import Ecto.Query, warn: false
   alias Anoma.Repo
 
-  alias Anoma.Pricing.Currency
+  alias Anoma.Assets.Currency
 
   @doc """
   Returns the list of currencies.

@@ -1,7 +1,7 @@
 defmodule AnomaWeb.Api.InviteController do
   use AnomaWeb, :controller
 
-  alias Anoma.Accounts.Invite
+  alias Anoma.Invites.Invite
   alias Anoma.Invites
   alias AnomaWeb.Api
   alias AnomaWeb.Api.InviteController.Schemas

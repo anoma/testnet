@@ -120,7 +120,7 @@ defmodule Anoma.AccountsTest do
   end
 
   describe "invites" do
-    alias Anoma.Accounts.Invite
+    alias Anoma.Invites.Invite
 
     import Anoma.AccountsFixtures
 

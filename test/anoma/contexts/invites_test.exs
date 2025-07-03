@@ -4,7 +4,7 @@ defmodule Anoma.InvitesTest do
   alias Anoma.Invites
 
   describe "invites" do
-    alias Anoma.Accounts.Invite
+    alias Anoma.Invites.Invite
     import Anoma.AccountsFixtures
 
     @invalid_attrs %{code: nil}

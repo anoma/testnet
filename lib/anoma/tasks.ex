@@ -2,9 +2,9 @@ defmodule Anoma.Tasks do
   @moduledoc """
   Defines a few functions that are being run as a task by the Quantum scheduler.
   """
-  alias Anoma.Accounts.DailyPoints
+  alias Anoma.DailyPoints.DailyPoints
   alias Anoma.Invites
-  alias Anoma.Pricing.Currency
+  alias Anoma.Assets.Currency
 
   require Logger
 
@@ -97,9 +97,9 @@ defmodule Anoma.Tasks do
 
   # check if there is enough pricing information to settle this bet
   defp can_settle?(bet) do
-    with %Currency{price: btc_price_at_bet} <- Anoma.Pricing.price_at("BTC-USD", bet.inserted_at),
+    with %Currency{price: btc_price_at_bet} <- Anoma.Assets.price_at("BTC-USD", bet.inserted_at),
          settle_time <- DateTime.add(bet.inserted_at, 1, :minute),
-         %Currency{price: btc_price_now} <- Anoma.Pricing.price_at("BTC-USD", settle_time) do
+         %Currency{price: btc_price_now} <- Anoma.Assets.price_at("BTC-USD", settle_time) do
       # check that the user has enough coins to make this bet
       required_points = bet.points
       required_gas = :math.pow(bet.multiplier, 2) * 10

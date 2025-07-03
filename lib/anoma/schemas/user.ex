@@ -63,17 +63,17 @@ defmodule Anoma.Accounts.User do
     field :auth_provider, :string
     field :auth_token, :string
 
-    # has_one :invite, Anoma.Accounts.Invite
+    # has_one :invite, Anoma.Invites.Invite
 
     # invites available to this user
-    has_many :invites, Anoma.Accounts.Invite, foreign_key: :owner_id
+    has_many :invites, Anoma.Invites.Invite, foreign_key: :owner_id
 
     # a user can have many bets
     has_many :bets, Anoma.Bitflip.Bet, foreign_key: :user_id
 
-    has_one :invite, Anoma.Accounts.Invite, foreign_key: :invitee_id
+    has_one :invite, Anoma.Invites.Invite, foreign_key: :invitee_id
 
-    has_many :daily_points, Anoma.Accounts.DailyPoint
+    has_many :daily_points, Anoma.DailyPoints.DailyPoint
 
     timestamps(type: :utc_datetime)
   end

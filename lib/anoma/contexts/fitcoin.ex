@@ -1,4 +1,4 @@
-defmodule Anoma.Accounts.Fitcoin do
+defmodule Anoma.Fitcoin do
   @moduledoc """
   The Fitcoin context.
   """

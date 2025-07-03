@@ -23,7 +23,7 @@ defmodule AnomaWeb.Api.InviteController.Schemas do
 
     OpenApiSpex.schema(%{
       type: :object,
-      properties: %{invites: %Schema{type: :array, items: Anoma.Accounts.Invite}}
+      properties: %{invites: %Schema{type: :array, items: Anoma.Invites.Invite}}
     })
   end
 end

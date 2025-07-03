@@ -6,8 +6,8 @@ defmodule Anoma.BitflipTest do
 
   import Anoma.BitflipFixtures
   import Anoma.AccountsFixtures
-  import Anoma.PricingFixtures
-  import Anoma.PricingFixtures
+  import Anoma.AssetsFixtures
+  import Anoma.AssetsFixtures
 
   describe "bets" do
     alias Anoma.Bitflip.Bet

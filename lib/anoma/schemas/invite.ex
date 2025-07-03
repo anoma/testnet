@@ -1,4 +1,4 @@
-defmodule Anoma.Accounts.Invite do
+defmodule Anoma.Invites.Invite do
   @moduledoc """
   Schema for an invite owned by a user.
   """

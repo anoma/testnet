@@ -1,7 +1,7 @@
 defmodule Anoma.BitflipFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `Anoma.Pricing` context.
+  entities via the `Anoma.Assets` context.
   """
 
   @doc """

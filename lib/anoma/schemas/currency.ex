@@ -1,4 +1,4 @@
-defmodule Anoma.Pricing.Currency do
+defmodule Anoma.Assets.Currency do
   @moduledoc """
   I implement the schema for a currency value.
   """

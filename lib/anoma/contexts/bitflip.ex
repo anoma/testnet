@@ -1,6 +1,6 @@
 defmodule Anoma.Bitflip do
   @moduledoc """
-  The Pricing context.
+  The Assets context.
   """
 
   import Ecto.Query, warn: false
@@ -8,7 +8,7 @@ defmodule Anoma.Bitflip do
   alias Anoma.Accounts
   alias Anoma.Accounts.User
   alias Anoma.Bitflip.Bet
-  alias Anoma.Pricing.Currency
+  alias Anoma.Assets.Currency
   alias Anoma.Repo
 
   require Logger
@@ -208,9 +208,9 @@ defmodule Anoma.Bitflip do
   # check if there is enough price info to settle this bet
   @spec has_price_info?(Bet.t()) :: {:ok, float(), float()} | {:error, :no_price_information}
   defp has_price_info?(bet) do
-    with %Currency{price: btc_price_at_bet} <- Anoma.Pricing.price_at("BTC-USD", bet.inserted_at),
+    with %Currency{price: btc_price_at_bet} <- Anoma.Assets.price_at("BTC-USD", bet.inserted_at),
          settle_time <- DateTime.add(bet.inserted_at, 1, :minute),
-         %Currency{price: btc_price_now} <- Anoma.Pricing.price_at("BTC-USD", settle_time) do
+         %Currency{price: btc_price_now} <- Anoma.Assets.price_at("BTC-USD", settle_time) do
       {:ok, btc_price_at_bet, btc_price_now}
     else
       _ ->

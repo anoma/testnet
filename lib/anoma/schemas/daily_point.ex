@@ -1,4 +1,4 @@
-defmodule Anoma.Accounts.DailyPoint do
+defmodule Anoma.DailyPoints.DailyPoint do
   @moduledoc """
   Schema for a daily point that a user can claim.
   """

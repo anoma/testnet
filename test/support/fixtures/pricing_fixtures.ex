@@ -1,7 +1,7 @@
-defmodule Anoma.PricingFixtures do
+defmodule Anoma.AssetsFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `Anoma.Pricing` context.
+  entities via the `Anoma.Assets` context.
   """
 
   @doc """
@@ -15,7 +15,7 @@ defmodule Anoma.PricingFixtures do
         price: 120.5,
         timestamp: DateTime.utc_now()
       })
-      |> Anoma.Pricing.create_currency()
+      |> Anoma.Assets.create_currency()
 
     currency
   end

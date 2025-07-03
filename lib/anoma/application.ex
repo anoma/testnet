@@ -5,7 +5,7 @@ defmodule Anoma.Application do
 
   use Application
 
-  alias Anoma.Accounts.DailyPoint
+  alias Anoma.DailyPoints.DailyPoint
   alias Anoma.Accounts.User
 
   @impl true

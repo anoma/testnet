@@ -1,11 +1,11 @@
-defmodule Anoma.Accounts.DailyPoints do
+defmodule Anoma.DailyPoints.DailyPoints do
   @moduledoc """
   The DailyPoints context.
   """
 
   import Ecto.Query, warn: false
 
-  alias Anoma.Accounts.DailyPoint
+  alias Anoma.DailyPoints.DailyPoint
   alias Anoma.Accounts.User
   alias Anoma.Repo
 

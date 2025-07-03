@@ -1,4 +1,4 @@
-defmodule Anoma.Repo.Migrations.CreateBets do
+defmodule Anoma.Repo.Migrations.CreateBitflip do
   use Ecto.Migration
 
   def change do

@@ -6,8 +6,8 @@ defmodule AnomaWeb.UserChannel do
   use AnomaWeb, :channel
 
   alias Anoma.Accounts
-  alias Anoma.Accounts.DailyPoint
-  alias Anoma.Accounts.DailyPoints
+  alias Anoma.DailyPoints.DailyPoint
+  alias Anoma.DailyPoints.DailyPoints
   alias Anoma.Accounts.User
   alias AnomaWeb.Plugs.AuthPlug
 

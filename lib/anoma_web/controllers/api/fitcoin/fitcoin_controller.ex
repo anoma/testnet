@@ -3,8 +3,8 @@ defmodule AnomaWeb.Api.FitcoinController do
 
   require Logger
 
-  alias Anoma.Accounts
   alias AnomaWeb.Api
+  alias Anoma.Fitcoin
   alias AnomaWeb.Api.FitcoinController.Schemas
 
   action_fallback AnomaWeb.FallbackController
@@ -42,14 +42,14 @@ defmodule AnomaWeb.Api.FitcoinController do
   @spec add(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def add(conn, %{}) do
     user = conn.assigns.current_user
-    {:ok, user} = Accounts.Fitcoin.add_fitcoin(user)
+    {:ok, user} = Fitcoin.add_fitcoin(user)
 
     render(conn, :balance, fitcoins: user.fitcoins)
   end
 
   def balance(conn, %{}) do
     user = conn.assigns.current_user
-    {:ok, balance} = Accounts.Fitcoin.balance(user)
+    {:ok, balance} = Fitcoin.balance(user)
 
     render(conn, :balance, fitcoins: balance)
   end

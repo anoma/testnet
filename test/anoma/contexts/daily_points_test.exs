@@ -1,8 +1,8 @@
-defmodule Anoma.Accounts.DailyPointsTest do
+defmodule Anoma.DailyPoints.DailyPointsTest do
   use Anoma.DataCase
 
-  alias Anoma.Accounts.DailyPoint
-  alias Anoma.Accounts.DailyPoints
+  alias Anoma.DailyPoints.DailyPoint
+  alias Anoma.DailyPoints.DailyPoints
 
   import Anoma.AccountsFixtures
 

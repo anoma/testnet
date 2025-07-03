@@ -15,7 +15,7 @@ defmodule AnomaWeb.Api.BetController do
   # ----------------------------------------------------------------------------
   # OpenAPI Spec
 
-  tags ["Bets"]
+  tags ["Bitflip"]
 
   operation :place,
     security: [%{"authorization" => []}],
@@ -41,7 +41,7 @@ defmodule AnomaWeb.Api.BetController do
     security: [%{"authorization" => []}],
     summary: "Get all the user's bets",
     responses: %{
-      200 => {"Bets", "application/json", Schemas.BetList},
+      200 => {"Bitflip", "application/json", Schemas.BetList},
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
