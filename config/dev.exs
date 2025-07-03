@@ -3,7 +3,7 @@ import Config
 config :anoma,
   # children: [Anoma.Scheduler, Anoma.Coinbase],
   children: [],
-  debug_auth: true,
+  debug_auth: false,
   promex: false
 
 # Configure your database

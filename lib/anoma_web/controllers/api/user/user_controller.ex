@@ -8,6 +8,7 @@ defmodule AnomaWeb.Api.UserController do
   alias AnomaWeb.Api
   alias AnomaWeb.Api.UserController.Schemas
   alias AnomaWeb.Plugs.AuthPlug
+  alias AnomaWeb.Twitter
 
   action_fallback AnomaWeb.FallbackController
 
@@ -24,11 +25,40 @@ defmodule AnomaWeb.Api.UserController do
     }
 
   operation :profile,
+    security: [%{"authorization" => []}],
     summary: "Returns the user profile",
     responses: %{
       200 => {"success", "application/json", Accounts.User},
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
+
+  operation :x_auth,
+    security: [%{"authorization" => []}],
+    summary: "Submit X authentication codes ",
+    request_body: {"MetaMask auth parameters", "application/json", Schemas.XAuthRequest},
+    responses: %{
+      200 => {"success", "application/json", Api.Schemas.Success},
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
+    }
+
+  @doc """
+  The front-end calls this endpoint to let the backend obtain an access token
+  for its profile.
+  """
+  @spec x_auth(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def x_auth(conn, %{"code" => code, "code_verifier" => code_verifier}) do
+    user = conn.assigns.current_user
+
+    with {:ok, access_token} <- Twitter.fetch_access_token(code, code_verifier)|> tap(&IO.inspect(&1, label: "")),
+         {:ok, user_meta_data} <- Twitter.fetch_user_meta_data(access_token) do
+      # put the meta data in the user's profile
+      {:ok, _} = Accounts.update_user_twitter_data(user, user_meta_data, access_token)
+
+      # return an empty response
+      json(conn, %{})
+
+    end
+  end
 
   @doc """
   Authenticate a user with MetaMask signature verification.

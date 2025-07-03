@@ -84,26 +84,6 @@ defmodule AnomaWeb.Twitter do
           {:ok, user_meta_data()}
           | {:error, :failed_to_fetch_user_data}
   def fetch_user_meta_data(access_token) do
-    # cache =
-    #   {:ok,
-    #    %{
-    #      id: "1933171045675986944",
-    #      name: "thisisnotabotaccount",
-    #      description: "",
-    #      username: "thisisnota41858",
-    #      profile_image_url:
-    #        "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
-    #      public_metrics: %{
-    #        followers_count: 0,
-    #        following_count: 1,
-    #        like_count: 0,
-    #        listed_count: 0,
-    #        media_count: 0,
-    #        tweet_count: 0
-    #      },
-    #      verified: false
-    #    }}
-
     headers = [
       {"Authorization", "Bearer #{access_token}"},
       {"Content-Type", "application/json"}

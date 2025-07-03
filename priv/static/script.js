@@ -5,12 +5,12 @@
 
 const CONFIG = {
   twitterClientId: 'RG5ZOVoydWJlZ3FOSnVTa1dDTnA6MTpjaQ', // X OAuth 2.0 Client ID
-  // backendUrl: 'http://localhost:4000',
-  // redirectUri: 'http://localhost:4000/index.html', // Exact match with backend
-  // websocketUrl: 'ws://localhost:4000/socket/websocket',
-  backendUrl: 'https://anoma.genserver.be',
-  redirectUri: 'https://anoma.genserver.be/index.html', // Exact match with backend
-  websocketUrl: 'wss://anoma.genserver.be/socket/websocket',
+  backendUrl: 'http://localhost:4000',
+  redirectUri: 'http://localhost:4000/index.html', // Exact match with backend
+  websocketUrl: 'ws://localhost:4000/socket/websocket',
+  // backendUrl: 'https://anoma.genserver.be',
+  // redirectUri: 'https://anoma.genserver.be/index.html', // Exact match with backend
+  // websocketUrl: 'wss://anoma.genserver.be/socket/websocket',
 };
 
 //----------------------------------------------------------------------------
@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', async function () {
   //----------------------------------------------------------------------------
   // Install callbacks on buttons
 
+  // button to login to x.com
+  const xloginBtn = document.getElementById('xloginBtn');
+  xloginBtn.addEventListener('click', doXLogin);
 
   // button to login with metamask
   const loginBtn = document.getElementById('loginBtn');
@@ -48,6 +51,8 @@ document.addEventListener('DOMContentLoaded', async function () {
   const addFitcoinBtn = document.getElementById('addFitcoinBtn');
   addFitcoinBtn.addEventListener('click', addFitcoin);
 
+
+
   //----------------------------------------------------------------------------
   // Check for existing session
 
@@ -62,10 +67,96 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   //----------------------------------------------------------------------------
+  // Check if this a redirect from X.com
+
+  // the page is loaded after being redirected from x.com
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('code');
+
+  if (code) {
+    console.log('redirected here from x.com');
+    await handleRedirect(code);
+  }
+
+
+  //----------------------------------------------------------------------------
   // Websocket connection
 
   connectWebSocket();
 });
+
+//----------------------------------------------------------------------------
+// Handle the initial page load
+
+async function doXLogin() {
+  console.log('logging in on x.com');
+
+  const codeVerifier = generateCodeVerifier();
+  localStorage.setItem('twitter_code_verifier', codeVerifier);
+
+  const codeChallenge = await generateCodeChallenge(codeVerifier);
+
+  // create the url to authenticate with X.com
+  const twitterUrl =
+    `https://twitter.com/i/oauth2/authorize?` +
+    `response_type=code&` +
+    `client_id=${CONFIG.twitterClientId}&` +
+    `redirect_uri=${encodeURIComponent(CONFIG.redirectUri)}&` +
+    `scope=tweet.read%20users.read%20follows.read&` +
+    `state=state&` +
+    `code_challenge=${codeChallenge}&` +
+    `code_challenge_method=S256`;
+
+  // redirect to the x.com auth page
+  window.location.href = twitterUrl;
+}
+
+async function handleRedirect(code) {
+  console.log('handling redirect from x.com');
+
+  // read code verified from local storage
+  const codeVerifier = localStorage.getItem('twitter_code_verifier');
+
+  // send code and code_verified to the backend to let it fetch a token for our account
+  try {
+    const response = await fetch(`${CONFIG.backendUrl}/api/v1/user/xauth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${currentJwt}`,
+      },
+      body: JSON.stringify({ code: code, code_verifier: codeVerifier }),
+    });
+
+    if (!response.ok) {
+      logMessage('/api/v1/user/auth returned an error', 'error', channel = 'messages');
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // if the request succeeded, we get back {user: .., success: true}
+    const data = await response.json();
+
+    if (data.success && data.user) {
+      currentUser = data.user;
+      localStorage.setItem('user_id', currentUser.id);
+
+      currentUserId = currentUser.id;
+      localStorage.setItem('user_id', currentUserId);
+
+      updateUserData();
+
+      // persist the backend jwt in local storage
+      currentJwt = data.jwt;
+      localStorage.setItem('jwt', currentJwt);
+
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else {
+      throw new Error('Invalid response from server');
+    }
+  } catch (error) {
+  } finally {
+  }
+}
 
 //----------------------------------------------------------------------------
 // Handle MetaMask authentication

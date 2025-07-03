@@ -40,4 +40,22 @@ defmodule AnomaWeb.Api.UserController.Schemas do
       }
     })
   end
+
+  defmodule XAuthRequest do
+    @moduledoc false
+    require OpenApiSpex
+
+    OpenApiSpex.schema(%{
+      title: "X Login Request",
+      type: :object,
+      properties: %{
+        code: %Schema{type: :string, description: "Code", example: "supersecret"},
+        code_verifier: %Schema{
+          type: :string,
+          description: "Code Verifier",
+          example: "itsreallysecret"
+        }
+      }
+    })
+  end
 end

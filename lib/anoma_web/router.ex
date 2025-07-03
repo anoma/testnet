@@ -50,6 +50,7 @@ defmodule AnomaWeb.Router do
       # get "/daily-points", UserController, :daily_points
       # post "/claim-daily-point", UserController, :claim_point
       get "/", UserController, :profile
+      post "/xauth", UserController, :x_auth
     end
 
     # /api/v1/fitcoin
