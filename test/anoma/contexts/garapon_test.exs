@@ -139,6 +139,10 @@ defmodule Anoma.BitflipTest do
       user = Accounts.get_user!(user.id)
       # the bet is not created using the place_bet api, so the user did not lose his coins!
       assert user.points == 3
+
+      # assert the bet says it has been won
+      bet = Bitflip.get_bet!(bet.id)
+      assert bet.won == true
     end
 
     test "create a bet, pricing info a little later than 1 minute" do
@@ -171,6 +175,10 @@ defmodule Anoma.BitflipTest do
       user = Accounts.get_user!(user.id)
       # the bet is not created using the place_bet api, so the user did not lose his coins!
       assert user.points == 3
+
+      # assert the bet says it has been won
+      bet = Bitflip.get_bet!(bet.id)
+      assert bet.won == true
     end
 
     test "create a bet, pricing info a little earlier than 1 minute" do
@@ -230,6 +238,10 @@ defmodule Anoma.BitflipTest do
       user = Accounts.get_user!(user.id)
       # the bet is not created using the place_bet api, so the user did not lose his coins!
       assert user.points == 1
+
+      # assert the bet says it has been won
+      bet = Bitflip.get_bet!(bet.id)
+      assert bet.won == false
     end
 
     test "create a bet no pricing info" do
