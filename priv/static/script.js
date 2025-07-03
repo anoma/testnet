@@ -5,12 +5,12 @@
 
 const CONFIG = {
   twitterClientId: 'RG5ZOVoydWJlZ3FOSnVTa1dDTnA6MTpjaQ', // X OAuth 2.0 Client ID
-  backendUrl: 'http://localhost:4000',
-  redirectUri: 'http://localhost:4000/index.html', // Exact match with backend
-  websocketUrl: 'ws://localhost:4000/socket/websocket',
-  // backendUrl: 'https://anoma.genserver.be',
-  // redirectUri: 'https://anoma.genserver.be/index.html', // Exact match with backend
-  // websocketUrl: 'wss://anoma.genserver.be/socket/websocket',
+  // backendUrl: 'http://localhost:4000',
+  // redirectUri: 'http://localhost:4000/index.html', // Exact match with backend
+  // websocketUrl: 'ws://localhost:4000/socket/websocket',
+  backendUrl: 'https://anoma.genserver.be',
+  redirectUri: 'https://anoma.genserver.be/index.html', // Exact match with backend
+  websocketUrl: 'wss://anoma.genserver.be/socket/websocket',
 };
 
 //----------------------------------------------------------------------------
