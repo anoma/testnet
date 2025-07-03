@@ -201,6 +201,13 @@ defmodule Anoma.Accounts do
   """
   @spec update_user(User.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def update_user(%User{} = user, attrs) do
+    changes_points? = Map.has_key?(attrs, :points) or Map.has_key?(attrs, "points")
+    added_points = Map.get(attrs, :points, 0) + Map.get(attrs, "points", 0) - user.points
+
+    if changes_points? and added_points > 0 do
+      Logger.warning("adding points to a user via the update_user function")
+    end
+
     user
     |> User.changeset(attrs)
     |> Repo.update()
@@ -240,7 +247,6 @@ defmodule Anoma.Accounts do
   """
   @spec add_points_to_user(User.t(), integer()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def add_points_to_user(%User{} = user, points) when is_integer(points) do
-
     current_points = user.points || 0
     new_points = current_points + points
 

@@ -119,7 +119,7 @@ defmodule Anoma.Garapon do
         case prize do
           :points ->
             {:ok, _user} =
-              Anoma.Accounts.update_user(coupon.owner, %{points: coupon.owner.points + prize_amount})
+              Anoma.Accounts.add_points_to_user(coupon.owner, prize_amount)
 
           :fitcoins ->
             {:ok, _user} =

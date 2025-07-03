@@ -179,7 +179,7 @@ defmodule Anoma.Bitflip do
     case won?(bet) do
       {:ok, :won, profit} ->
         Logger.warning("bet won")
-        {:ok, _user} = Accounts.update_user(user, %{points: user.points + profit})
+        {:ok, _user} = Accounts.add_points_to_user(user, profit)
         {:ok, bet} = update_bet(bet, %{settled: true})
         {:ok, bet, :won}
 

@@ -141,7 +141,7 @@ defmodule AnomaWeb.UserControllerTest do
       user = user_fixture(%{points: 0})
 
       # Update user points directly in database
-      {:ok, updated_user} = Accounts.update_user(user, %{points: 250})
+      {:ok, updated_user} = Accounts.add_points_to_user(user, 250)
 
       jwt = AuthPlug.generate_jwt_token(user)
       conn = put_req_header(conn, "authorization", "Bearer #{jwt}")
