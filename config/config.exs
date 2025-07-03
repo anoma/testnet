@@ -36,13 +36,13 @@ config :phoenix, :json_library, Jason
 config :anoma, Anoma.Scheduler,
   jobs: [
     # Every minute
-    {{:extended, "* * * * *"}, {Anoma.Tasks, :settle_bets, []}}
+    {{:extended, "* * * * *"}, {Anoma.Tasks, :settle_bets, []}},
     # # Every 15 minutes
     # {"*/15 * * * *",   fn -> System.cmd("rm", ["/tmp/tmp_"]) end},
     # # Runs on 18, 20, 22, 0, 2, 4, 6:
     # {"0 18-6/2 * * *", fn -> :mnesia.backup('/var/backup/mnesia') end},
-    # # Runs every midnight:
-    # {"@daily",         {Backup, :backup, []}}
+    # Runs every midnight:
+    {"@daily", {Anoma.Tasks, :create_daily_coupons, []}}
   ]
 
 config :anoma, Anoma.PromEx,

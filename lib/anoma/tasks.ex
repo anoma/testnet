@@ -60,4 +60,16 @@ defmodule Anoma.Tasks do
     Anoma.Bitflip.list_unsettled_bets()
     |> Enum.each(&Anoma.Bitflip.settle_bet/1)
   end
+
+  @doc """
+  Create a coupon for each user.
+  """
+  def create_daily_coupons do
+    Anoma.Accounts.list_users()
+    |> Enum.each(fn user ->
+      {:ok, _coupon} = Anoma.Garapon.create_coupon(%{
+        owner_id: user.id
+      })
+    end)
+  end
 end
