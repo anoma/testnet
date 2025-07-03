@@ -70,7 +70,7 @@ defmodule AnomaWeb.Api.BitflipController do
   Lets a user place a bet.
   """
   @spec place(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def place(conn, %{"up?" => up?, "leverage" => mutliplier, "points" => points}) do
+  def place(conn, %{"up" => up?, "leverage" => mutliplier, "points" => points}) do
     user = conn.assigns.current_user
 
     with {:ok, bet} <- Bitflip.place_bet(user, up?, mutliplier, points) do
