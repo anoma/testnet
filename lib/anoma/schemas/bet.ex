@@ -56,7 +56,7 @@ defmodule Anoma.Bitflip.Bet do
   @doc false
   def changeset(bet, attrs) do
     bet
-    |> cast(attrs, [:up, :multiplier, :points, :user_id, :inserted_at])
+    |> cast(attrs, [:up, :multiplier, :points, :user_id, :inserted_at, :settled])
     |> validate_required([:up, :multiplier, :points, :user_id])
   end
 end

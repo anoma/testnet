@@ -6,11 +6,11 @@ defmodule Anoma.Coinbase do
   require Logger
 
   # use the sandbox during dev because the api is not free
-  if Mix.env() == :prod do
+  # if Mix.env() == :prod do
     @url "wss://ws-feed.exchange.coinbase.com"
-  else
-    @url "wss://ws-feed-public.sandbox.exchange.coinbase.com"
-  end
+  # else
+    # @url "wss://ws-feed-public.sandbox.exchange.coinbase.com"
+  # end
 
   def start_link(_) do
     {:ok, pid} = WebSockex.start_link(@url, __MODULE__, %{})
@@ -37,10 +37,10 @@ defmodule Anoma.Coinbase do
   # parse the message and store it
   defp process_message(msg) do
     case parse_message(msg) do
-      {:ok, %{product_id: ticker, price: price}} ->
+      {:ok, %{product_id: ticker, price: price, time: timestamp}} ->
         {price, ""} = Float.parse(price)
 
-        Anoma.Assets.create_currency(%{currency: ticker, price: price})
+        {:ok, _} = Anoma.Assets.create_currency(%{currency: ticker, price: price, timestamp: timestamp})
 
       _ ->
         :noop

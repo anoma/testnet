@@ -26,6 +26,21 @@ defmodule Anoma.Bitflip do
     Repo.all(Bet)
   end
 
+    @doc """
+  Returns the list of bets that are not settled.
+
+  ## Examples
+
+      iex> list_unsettled_bets()
+      [%Bet{}, ...]
+
+  """
+  def list_unsettled_bets do
+    Bet
+    |> where([b], b.settled == false)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single bet.
 
@@ -154,21 +169,26 @@ defmodule Anoma.Bitflip do
   @doc """
   I settle a bet if its possible.
   """
+  @spec settle_bet(Bet.t()) :: {:ok, Bet.t(), :won | :lost} |  {:error, :already_settled} | {:error, term()}
   def settle_bet(%Bet{} = bet) do
+    Logger.warning "settling bet #{inspect bet}"
     bet = Repo.preload(bet, :user)
     user = bet.user
     # if the user won, update their balance.
     case won?(bet) do
       {:ok, :won, profit} ->
+        Logger.warning "bet won"
         {:ok, _user} = Accounts.update_user(user, %{points: user.points + profit})
         {:ok, bet} = update_bet(bet, %{settled: true})
         {:ok, bet, :won}
 
       {:ok, :lost} ->
+        Logger.warning "bet lost"
         {:ok, bet} = update_bet(bet, %{settled: true})
         {:ok, bet, :lost}
 
       {:error, err} ->
+        Logger.warning "bet error #{inspect err}"
         {:error, err}
     end
 
