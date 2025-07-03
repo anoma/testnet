@@ -121,7 +121,7 @@ defmodule AnomaWeb.UserControllerTest do
       user =
         user_fixture(%{
           points: 100,
-          gas: 50,
+          fitcoins: 50,
           eth_address: "0x" <> Base.encode16(:crypto.strong_rand_bytes(20), case: :lower)
         })
 
@@ -133,7 +133,7 @@ defmodule AnomaWeb.UserControllerTest do
       response = json_response(conn, 200)
       assert response["id"] == user.id
       assert response["points"] == 100
-      assert response["gas"] == 50
+      assert response["fitcoins"] == 50
       assert response["eth_address"] == user.eth_address
     end
 

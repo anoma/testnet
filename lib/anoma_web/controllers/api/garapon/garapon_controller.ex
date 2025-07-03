@@ -35,7 +35,7 @@ defmodule AnomaWeb.Api.CouponController do
 
   operation :buy,
     security: [%{"authorization" => []}],
-    summary: "Buy a coupon with gas",
+    summary: "Buy a coupon with fitcoins",
     responses: %{
       400 => {"Generic error", "application/json", Api.Schemas.Error},
       200 => {"Success", "application/json", Garapon.Coupon}

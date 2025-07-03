@@ -10,19 +10,19 @@ defmodule Anoma.GaraponTest do
   import Anoma.AccountsFixtures
 
   describe "buy coupon" do
-    test "enough gas" do
-      owner = user_fixture(%{gas: 100})
+    test "enough fitcoins" do
+      owner = user_fixture(%{fitcoins: 100})
       {:ok, coupon} = Garapon.buy_coupon(owner)
 
       assert coupon.owner_id == owner.id
       owner = Accounts.get_user!(owner.id) |> Anoma.Repo.preload(:coupons)
       assert Enum.count(owner.coupons) == 1
-      assert owner.gas == 0
+      assert owner.fitcoins == 0
     end
 
-    test "not enough gas" do
-      owner = user_fixture(%{gas: 0})
-      {:error, :not_enough_gas} = Garapon.buy_coupon(owner)
+    test "not enough fitcoins" do
+      owner = user_fixture(%{fitcoins: 0})
+      {:error, :not_enough_fitcoins} = Garapon.buy_coupon(owner)
 
       owner = Accounts.get_user!(owner.id) |> Anoma.Repo.preload(:coupons)
       assert Enum.empty?(owner.coupons)

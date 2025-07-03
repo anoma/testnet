@@ -52,10 +52,10 @@ defmodule AnomaWeb.FallbackController do
     |> render(:"401")
   end
 
-  def _call(conn, {:error, :not_enough_gas}) do
+  def _call(conn, {:error, :not_enough_fitcoins}) do
     conn
     |> put_status(:unauthorized)
-    |> assign(:error, "not_enough_gas")
+    |> assign(:error, "not_enough_fitcoins")
     |> put_view(html: AnomaWeb.ErrorHTML, json: AnomaWeb.ErrorJSON)
     |> render(:"401")
   end

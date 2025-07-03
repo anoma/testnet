@@ -270,15 +270,15 @@ defmodule Anoma.Invites do
   end
 
   @doc """
-  Lets a user buy an invite with gas.
+  Lets a user buy an invite with fitcoins.
   """
-  @spec buy_invite(User.t()) :: {:ok, Invite.t()} | {:error, :not_enough_gas}
+  @spec buy_invite(User.t()) :: {:ok, Invite.t()} | {:error, :not_enough_fitcoins}
   def buy_invite(user) do
     Repo.transaction(fn ->
       user = Accounts.get_user!(user.id)
 
-      if user.gas < 100 do
-        Repo.rollback(:not_enough_gas)
+      if user.fitcoins < 100 do
+        Repo.rollback(:not_enough_fitcoins)
       else
         {:ok, invite} =
           create_invite(%{

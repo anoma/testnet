@@ -11,8 +11,8 @@ defmodule AnomaWeb.Api.CouponControllerTest do
   end
 
   describe "buy" do
-    test "enough gas", %{conn: conn} do
-      user = user_fixture(%{gas: 100})
+    test "enough fitcoins", %{conn: conn} do
+      user = user_fixture(%{fitcoins: 100})
 
       # create a jwt for this user and add it as a header
       jwt = AuthPlug.generate_jwt_token(user)
@@ -29,7 +29,7 @@ defmodule AnomaWeb.Api.CouponControllerTest do
              } = json_response(conn, 200)
 
       user = Accounts.get_user!(user.id)
-      assert user.gas == 0
+      assert user.fitcoins == 0
     end
   end
 

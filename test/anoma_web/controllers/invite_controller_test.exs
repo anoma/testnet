@@ -73,8 +73,8 @@ defmodule AnomaWeb.InviteControllerTest do
   end
 
   describe "buy invite" do
-    test "user has enogh gas", %{conn: conn} do
-      user = user_fixture(%{gas: 100})
+    test "user has enogh fitcoins", %{conn: conn} do
+      user = user_fixture(%{fitcoins: 100})
       # create a jwt for this user and add it as a header
       jwt = AuthPlug.generate_jwt_token(user)
       conn = put_req_header(conn, "authorization", "Bearer #{jwt}")
@@ -93,8 +93,8 @@ defmodule AnomaWeb.InviteControllerTest do
       assert Enum.count(user.invites) == 1
     end
 
-    test "user doesnt have enough gas", %{conn: conn} do
-      user = user_fixture(%{gas: 0})
+    test "user doesnt have enough fitcoins", %{conn: conn} do
+      user = user_fixture(%{fitcoins: 0})
       # create a jwt for this user and add it as a header
       jwt = AuthPlug.generate_jwt_token(user)
       conn = put_req_header(conn, "authorization", "Bearer #{jwt}")
@@ -102,7 +102,7 @@ defmodule AnomaWeb.InviteControllerTest do
       # try and claim an invite
       conn = post(conn, ~p"/api/v1/invite/buy")
 
-      assert %{"error" => "not_enough_gas"} = json_response(conn, 401)
+      assert %{"error" => "not_enough_fitcoins"} = json_response(conn, 401)
 
       # assert the user has an invite that is unclaimed
       user = Accounts.get_user!(user.id) |> Anoma.Repo.preload(:invites)

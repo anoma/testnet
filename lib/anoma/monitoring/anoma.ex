@@ -27,13 +27,6 @@ defmodule Anoma.PromEx.Users do
           tags: [:status]
         ),
         last_value(
-          [:anoma, :user, :gas],
-          event_name: [:anoma, :user, :user_info],
-          description: "Gas per user",
-          measurement: :gas,
-          tags: [:id]
-        ),
-        last_value(
           [:anoma, :user, :points],
           event_name: [:anoma, :user, :user_info],
           description: "Points per user",
@@ -132,7 +125,6 @@ defmodule Anoma.PromEx.Users do
         :telemetry.execute(
           [:anoma, :user, :user_info],
           %{
-            gas: user.gas,
             points: user.points,
             fitcoins: user.fitcoins,
             invites: Enum.count(user.invites),

@@ -136,20 +136,20 @@ defmodule Anoma.Bitflip do
   Places a bet for a user with the given parameters.
   """
   @spec place_bet(User.t(), boolean(), number(), number()) ::
-          {:ok, Bet.t()} | {:error, :not_enough_gas | :not_enough_points}
+          {:ok, Bet.t()} | {:error, :not_enough_fitcoins | :not_enough_points}
   def place_bet(user, up?, multiplier, points) do
-    # compute the required gas to place this bet
-    required_gas = (:math.pow(multiplier, 2) * 10) |> trunc()
+    # compute the required fitcoins to place this bet
+    required_fitcoins = (:math.pow(multiplier, 2) * 10) |> trunc()
     required_points = points
 
     Repo.transaction(fn ->
       # fetch the user to get the latest points
       user = Accounts.get_user!(user.id)
 
-      # make sure the user has all the required points and gas
+      # make sure the user has all the required points and fitcoins
       cond do
-        required_gas > user.gas ->
-          Repo.rollback(:not_enough_gas)
+        required_fitcoins > user.fitcoins ->
+          Repo.rollback(:not_enough_fitcoins)
 
         required_points > user.points ->
           Repo.rollback(:not_enough_points)
@@ -159,7 +159,7 @@ defmodule Anoma.Bitflip do
           {:ok, user} =
             Accounts.update_user(user, %{
               points: user.points - required_points,
-              gas: user.gas - required_gas
+              fitcoins: user.fitcoins - required_fitcoins
             })
 
           # create the bet

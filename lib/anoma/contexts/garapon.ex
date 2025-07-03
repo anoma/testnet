@@ -196,17 +196,17 @@ defmodule Anoma.Garapon do
   end
 
   @doc """
-  Lets a user buy a coupon with gas.
+  Lets a user buy a coupon with fitcoins.
   """
-  @spec buy_coupon(User.t()) :: {:ok, Coupon.t()} | {:error, :not_enough_gas}
+  @spec buy_coupon(User.t()) :: {:ok, Coupon.t()} | {:error, :not_enough_fitcoins}
   def buy_coupon(user) do
     Repo.transaction(fn ->
       user = Accounts.get_user!(user.id)
 
-      if user.gas < 100 do
-        Repo.rollback(:not_enough_gas)
+      if user.fitcoins < 100 do
+        Repo.rollback(:not_enough_fitcoins)
       else
-        {:ok, _user} = Accounts.update_user(user, %{gas: user.gas - 100})
+        {:ok, _user} = Accounts.update_user(user, %{fitcoins: user.fitcoins - 100})
 
         {:ok, coupon} =
           Anoma.Garapon.create_coupon(%{

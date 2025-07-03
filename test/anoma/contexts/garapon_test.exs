@@ -76,7 +76,7 @@ defmodule Anoma.BitflipTest do
   describe "creating a bet" do
     test "create a bet" do
       # create a bet the price will go up
-      user = user_fixture(%{points: 1, gas: 10})
+      user = user_fixture(%{points: 1, fitcoins: 10})
 
       # place a bet
       {:ok, bet} = Bitflip.place_bet(user, true, 1, 1)
@@ -85,23 +85,23 @@ defmodule Anoma.BitflipTest do
       bet = Bitflip.get_bet!(bet.id)
       assert bet.settled == false
 
-      # assert the points and gas have already been deducted
+      # assert the points and fitcoins have already been deducted
       user = Accounts.get_user!(user.id)
       assert user.points == 0
-      assert user.gas == 0
+      assert user.fitcoins == 0
     end
 
-    test "create a bet with insufficient gas" do
+    test "create a bet with insufficient fitcoins" do
       # create a bet the price will go up
-      user = user_fixture(%{points: 1, gas: 0})
+      user = user_fixture(%{points: 1, fitcoins: 0})
 
       # place a bet
-      assert {:error, :not_enough_gas} == Bitflip.place_bet(user, true, 1, 1)
+      assert {:error, :not_enough_fitcoins} == Bitflip.place_bet(user, true, 1, 1)
     end
 
     test "create a bet with insufficient points" do
       # create a bet the price will go up
-      user = user_fixture(%{points: 0, gas: 10000})
+      user = user_fixture(%{points: 0, fitcoins: 10000})
 
       # place a bet
       assert {:error, :not_enough_points} == Bitflip.place_bet(user, true, 1, 1)
@@ -116,7 +116,7 @@ defmodule Anoma.BitflipTest do
       currency_fixture(%{currency: "BTC-USD", price: 101.0, timestamp: ~U[2025-07-01 09:01:00Z]})
 
       # create a bet the price will go up
-      user = user_fixture(%{points: 1, gas: 10})
+      user = user_fixture(%{points: 1, fitcoins: 10})
 
       # place a bet
       {:ok, bet} =
@@ -148,7 +148,7 @@ defmodule Anoma.BitflipTest do
       currency_fixture(%{currency: "BTC-USD", price: 101.0, timestamp: ~U[2025-07-01 09:02:00Z]})
 
       # create a bet the price will go up
-      user = user_fixture(%{points: 1, gas: 10})
+      user = user_fixture(%{points: 1, fitcoins: 10})
 
       # place a bet
       {:ok, bet} =
@@ -180,7 +180,7 @@ defmodule Anoma.BitflipTest do
       currency_fixture(%{currency: "BTC-USD", price: 101.0, timestamp: ~U[2025-07-01 09:00:59Z]})
 
       # create a bet the price will go up
-      user = user_fixture(%{points: 1, gas: 10})
+      user = user_fixture(%{points: 1, fitcoins: 10})
 
       # place a bet
       {:ok, bet} =
@@ -207,7 +207,7 @@ defmodule Anoma.BitflipTest do
       currency_fixture(%{currency: "BTC-USD", price: 99.0, timestamp: ~U[2025-07-01 09:01:00Z]})
 
       # create a bet the price will go up
-      user = user_fixture(%{points: 1, gas: 10})
+      user = user_fixture(%{points: 1, fitcoins: 10})
 
       # place a bet
       {:ok, bet} =
@@ -239,7 +239,7 @@ defmodule Anoma.BitflipTest do
       currency_fixture(%{currency: "BTC-USD", price: 99.0, timestamp: ~U[2025-07-01 09:00:01Z]})
 
       # create a bet the price will go up
-      user = user_fixture(%{points: 1, gas: 10})
+      user = user_fixture(%{points: 1, fitcoins: 10})
 
       # place a bet
       {:ok, bet} =

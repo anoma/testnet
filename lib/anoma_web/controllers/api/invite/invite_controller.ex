@@ -42,7 +42,7 @@ defmodule AnomaWeb.Api.InviteController do
 
   operation :buy,
     security: [%{"authorization" => []}],
-    summary: "Buy an invite with gas",
+    summary: "Buy an invite with fitcoins",
     responses: %{
       200 => {"Bought invite", "application/json", Invites.Invite},
       400 => {"Generic error", "application/json", Api.Schemas.Error}
@@ -85,7 +85,7 @@ defmodule AnomaWeb.Api.InviteController do
   end
 
   @doc """
-  Lets the user buy an invite with gas.
+  Lets the user buy an invite with fitcoins.
   """
 
   def buy(conn, _params) do
