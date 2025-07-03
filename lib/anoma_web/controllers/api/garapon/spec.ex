@@ -21,6 +21,23 @@ defmodule AnomaWeb.Api.CouponController.Schemas do
     })
   end
 
+  defmodule BuyRequest do
+    @moduledoc false
+    require OpenApiSpex
+
+    OpenApiSpex.schema(%{
+      title: "Coupon purchase request",
+      type: :object,
+      properties: %{
+        amount: %Schema{
+          type: :integer,
+          description: "Amount of coupons to buy",
+          example: "1000"
+        }
+      }
+    })
+  end
+
   defmodule CouponList do
     @moduledoc false
     require OpenApiSpex

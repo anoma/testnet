@@ -19,13 +19,17 @@ defmodule AnomaWeb.Api.CouponControllerTest do
       conn = put_req_header(conn, "authorization", "Bearer #{jwt}")
 
       # list the coupons, except empty
-      conn = post(conn, ~p"/api/v1/garapon/buy")
+      conn = post(conn, ~p"/api/v1/garapon/buy", %{amount: 1})
 
       assert %{
-               "id" => _,
-               "prize" => nil,
-               "prize_amount" => nil,
-               "used" => false
+               "coupons" => [
+                 %{
+                   "id" => _,
+                   "prize" => nil,
+                   "prize_amount" => nil,
+                   "used" => false
+                 }
+               ]
              } = json_response(conn, 200)
 
       user = Accounts.get_user!(user.id)

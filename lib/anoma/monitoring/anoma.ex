@@ -70,7 +70,7 @@ defmodule Anoma.PromEx.Users do
         ),
         last_value(
           [:anoma, :stats, :users],
-          event_name:  [:anoma, :stats, :users],
+          event_name: [:anoma, :stats, :users],
           description: "Active users in the last hours",
           measurement: :active_users,
           tags: [:range]

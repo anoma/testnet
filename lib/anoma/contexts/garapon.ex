@@ -57,7 +57,7 @@ defmodule Anoma.Garapon do
       |> where([dp], dp.used == true)
       |> Repo.aggregate(:count)
 
-      {used, unused}
+    {used, unused}
   end
 
   @doc """
@@ -224,6 +224,35 @@ defmodule Anoma.Garapon do
           })
 
         coupon
+      end
+    end)
+  end
+
+  @doc """
+  Lets a user buy multiple coupons with fitcoins.
+  """
+  @spec buy_coupons(User.t(), non_neg_integer()) ::
+          {:ok, [Coupon.t()]} | {:error, :not_enough_fitcoins}
+  def buy_coupons(user, amount) do
+    total_cost = amount * 100
+
+    Repo.transaction(fn ->
+      user = Accounts.get_user!(user.id)
+
+      if user.fitcoins < total_cost do
+        Repo.rollback(:not_enough_fitcoins)
+      else
+        {:ok, _user} = Accounts.update_user(user, %{fitcoins: user.fitcoins - total_cost})
+
+        for _ <- 1..amount do
+          {:ok, coupon} =
+            Anoma.Garapon.create_coupon(%{
+              owner_id: user.id,
+              used: false
+            })
+
+          coupon
+        end
       end
     end)
   end

@@ -35,10 +35,11 @@ defmodule AnomaWeb.Api.CouponController do
 
   operation :buy,
     security: [%{"authorization" => []}],
-    summary: "Buy a coupon with fitcoins",
+    summary: "Buy coupons with fitcoins",
+    request_body: {"Amount of coupons to buy", "application/json", Schemas.BuyRequest},
     responses: %{
       400 => {"Generic error", "application/json", Api.Schemas.Error},
-      200 => {"Success", "application/json", Garapon.Coupon}
+      200 => {"List of Garapon", "application/json", Schemas.CouponList}
     }
 
   # ----------------------------------------------------------------------------
@@ -76,11 +77,11 @@ defmodule AnomaWeb.Api.CouponController do
   end
 
   @spec buy(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def buy(conn, _params) do
+  def buy(conn, %{"amount" => amount}) do
     user = conn.assigns.current_user
 
-    with {:ok, coupon} <- Garapon.buy_coupon(user) do
-      render(conn, :coupon, coupon: coupon)
+    with {:ok, coupons} <- Garapon.buy_coupons(user, amount) do
+      render(conn, :coupons, coupons: coupons)
     end
   end
 end
