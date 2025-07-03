@@ -39,6 +39,10 @@ config :anoma,
   coinbase_secret: coinbase_secret
 
 if config_env() == :prod do
+  level = if System.get_env("DEBUG") == "true", do: :debug, else: :info
+
+  config :logger, level: level
+
   coinbase_api_key =
     System.get_env("COINBASE_API_KEY") || raise("COINBASE_API_KEY is not set")
 
