@@ -36,7 +36,7 @@ config :phoenix, :json_library, Jason
 config :anoma, Anoma.Scheduler,
   jobs: [
     # Every minute
-    {"* * * * *", {Anoma.Tasks, :settle_bets, []}}
+    {{:extended, "* * * * *"}, {Anoma.Tasks, :settle_bets, []}}
     # # Every 15 minutes
     # {"*/15 * * * *",   fn -> System.cmd("rm", ["/tmp/tmp_"]) end},
     # # Runs on 18, 20, 22, 0, 2, 4, 6:

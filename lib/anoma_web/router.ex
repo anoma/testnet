@@ -58,8 +58,8 @@ defmodule AnomaWeb.Router do
       get "/balance", FitcoinController, :balance
     end
 
-    # /api/v1/coupons
-    scope "/coupons" do
+    # /api/v1/garapon
+    scope "/garapon" do
       get "/", CouponController, :list
       put "/use", CouponController, :use
     end
@@ -70,11 +70,12 @@ defmodule AnomaWeb.Router do
       put "/redeem", InviteController, :redeem_invite
     end
 
-    # /api/v1/bet
-    scope "/bet" do
-      post "/place", BetController, :place
-      get "/", BetController, :list
-      get "/:id", BetController, :get
+    # /api/v1/bitflip
+    scope "/bitflip" do
+      post "/place", BitflipController, :place
+      get "/", BitflipController, :list
+      get "/price", BitflipController, :price
+      get "/:id", BitflipController, :get
     end
   end
 

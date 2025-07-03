@@ -1,4 +1,4 @@
-defmodule AnomaWeb.Api.BetController.Schemas do
+defmodule AnomaWeb.Api.BitflipController.Schemas do
   @moduledoc """
   Specifications of common return values from the api.
   """

@@ -68,4 +68,16 @@ defmodule Anoma.Assets do
     )
     |> Repo.one()
   end
+
+  @doc """
+  Returns the latest price for the given currency.
+  """
+  def last_price(currency) do
+    from(c in Currency,
+      where: c.currency == ^currency,
+      order_by: {:desc, c.timestamp},
+      limit: 1
+    )
+    |> Repo.one()
+  end
 end

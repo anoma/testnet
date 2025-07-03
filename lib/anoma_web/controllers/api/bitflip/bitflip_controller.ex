@@ -1,12 +1,13 @@
-defmodule AnomaWeb.Api.BetController do
+defmodule AnomaWeb.Api.BitflipController do
   use AnomaWeb, :controller
 
   require Logger
 
   alias Anoma.Bitflip
+  alias Anoma.Assets
   alias Anoma.Bitflip.Bet
   alias AnomaWeb.Api
-  alias AnomaWeb.Api.BetController.Schemas
+  alias AnomaWeb.Api.BitflipController.Schemas
 
   use OpenApiSpex.ControllerSpecs
 
@@ -45,8 +46,25 @@ defmodule AnomaWeb.Api.BetController do
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
+  operation :price,
+    security: [%{"authorization" => []}],
+    summary: "Get the latest known price.",
+    responses: %{
+      200 => {"Bitflip", "application/json", Anoma.Assets.Currency},
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
+    }
+
   # ----------------------------------------------------------------------------
   # Actions
+
+  @doc """
+  Returns the latest price of bitcoin.
+  """
+  @spec price(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def price(conn, _params) do
+    Assets.last_price("BTC-USD") |> tap(&IO.inspect(&1, label: ""))
+    render(conn, :price, price: Assets.last_price("BTC-USD"))
+  end
 
   @doc """
   Lets a user place a bet.

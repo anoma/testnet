@@ -1,4 +1,11 @@
-defmodule AnomaWeb.Api.BetJSON do
+defmodule AnomaWeb.Api.BitflipJSON do
+  @doc """
+  Render a price.
+  """
+  def price(%{price: price}) do
+    price
+  end
+
   @doc """
   Render a list of bitflip.
   """
