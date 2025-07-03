@@ -10,7 +10,7 @@ coupons = 5
 
 generate_user = fn ->
   {:ok, user} =
-    Anoma.Accounts.create_user(%{points: 1_000_000, gas: 1_000_000, fitcoins: 1_000_000})
+    Anoma.Accounts.create_user(%{points: 1_000_000, fitcoins: 1_000_000})
 
   user
 end
