@@ -3,8 +3,8 @@ defmodule AnomaWeb.Api.FitcoinController do
 
   require Logger
 
-  alias AnomaWeb.Api
   alias Anoma.Fitcoin
+  alias AnomaWeb.Api
   alias AnomaWeb.Api.FitcoinController.Schemas
 
   action_fallback AnomaWeb.FallbackController

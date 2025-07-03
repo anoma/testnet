@@ -3,10 +3,34 @@ defmodule AnomaWeb.Api.CouponControllerTest do
 
   import Anoma.AccountsFixtures
   import Anoma.GaraponFixtures
+  alias Anoma.Accounts
   alias AnomaWeb.Plugs.AuthPlug
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
+  end
+
+  describe "buy" do
+    test "enough gas", %{conn: conn} do
+      user = user_fixture(%{gas: 100})
+
+      # create a jwt for this user and add it as a header
+      jwt = AuthPlug.generate_jwt_token(user)
+      conn = put_req_header(conn, "authorization", "Bearer #{jwt}")
+
+      # list the coupons, except empty
+      conn = post(conn, ~p"/api/v1/garapon/buy")
+
+      assert %{
+               "id" => _,
+               "prize" => nil,
+               "prize_amount" => nil,
+               "used" => false
+             } = json_response(conn, 200)
+
+      user = Accounts.get_user!(user.id)
+      assert user.gas == 0
+    end
   end
 
   describe "list/2" do

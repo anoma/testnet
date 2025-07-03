@@ -5,8 +5,8 @@ defmodule Anoma.DailyPoints.DailyPoints do
 
   import Ecto.Query, warn: false
 
-  alias Anoma.DailyPoints.DailyPoint
   alias Anoma.Accounts.User
+  alias Anoma.DailyPoints.DailyPoint
   alias Anoma.Repo
 
   require Logger

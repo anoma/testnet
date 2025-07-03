@@ -7,8 +7,8 @@ defmodule Anoma.Bitflip do
 
   alias Anoma.Accounts
   alias Anoma.Accounts.User
-  alias Anoma.Bitflip.Bet
   alias Anoma.Assets.Currency
+  alias Anoma.Bitflip.Bet
   alias Anoma.Repo
 
   require Logger

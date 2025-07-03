@@ -1,8 +1,8 @@
 defmodule Anoma.InvitesTest do
   use Anoma.DataCase
 
-  alias Anoma.Invites
   alias Anoma.Accounts
+  alias Anoma.Invites
 
   describe "invites" do
     alias Anoma.Invites.Invite

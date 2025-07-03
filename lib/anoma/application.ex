@@ -5,8 +5,8 @@ defmodule Anoma.Application do
 
   use Application
 
-  alias Anoma.DailyPoints.DailyPoint
   alias Anoma.Accounts.User
+  alias Anoma.DailyPoints.DailyPoint
 
   @impl true
   def start(_type, _args) do

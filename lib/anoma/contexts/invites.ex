@@ -6,9 +6,8 @@ defmodule Anoma.Invites do
   import Ecto.Query, warn: false
 
   alias Anoma.Accounts
-  alias Anoma.Invites.Invite
   alias Anoma.Accounts.User
-  alias Anoma.Accounts
+  alias Anoma.Invites.Invite
   alias Anoma.Repo
 
   require Logger

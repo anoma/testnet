@@ -6,9 +6,10 @@ defmodule Anoma.Garapon do
   import Ecto.Query, warn: false
   alias Anoma.Repo
 
-  alias Anoma.Garapon.Coupon
+  alias Anoma.Accounts
   alias Anoma.Accounts.User
   alias Anoma.Garapon
+  alias Anoma.Garapon.Coupon
 
   @doc """
   Returns the list of coupons.
@@ -181,5 +182,29 @@ defmodule Anoma.Garapon do
   """
   def change_coupon(%Coupon{} = coupon, attrs \\ %{}) do
     Coupon.changeset(coupon, attrs)
+  end
+
+  @doc """
+  Lets a user buy a coupon with gas.
+  """
+  @spec buy_coupon(User.t()) :: {:ok, Coupon.t()} | {:error, :not_enough_gas}
+  def buy_coupon(user) do
+    Repo.transaction(fn ->
+      user = Accounts.get_user!(user.id)
+
+      if user.gas < 100 do
+        Repo.rollback(:not_enough_gas)
+      else
+        {:ok, _user} = Accounts.update_user(user, %{gas: user.gas - 100})
+
+        {:ok, coupon} =
+          Anoma.Garapon.create_coupon(%{
+            owner_id: user.id,
+            used: false
+          })
+
+        coupon
+      end
+    end)
   end
 end

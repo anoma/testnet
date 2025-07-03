@@ -16,6 +16,10 @@ defmodule AnomaWeb.Api.CouponJSON do
   @doc """
   Renders a single coupon.
   """
+  def coupon(%{coupon: coupon}) do
+    coupon
+  end
+
   def coupon(coupon) do
     coupon
   end

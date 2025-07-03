@@ -1,11 +1,33 @@
 defmodule Anoma.GaraponTest do
   use Anoma.DataCase
 
-  alias Anoma.Garapon.Coupon
   alias Anoma.Garapon
+  alias Anoma.Garapon.Coupon
+
+  alias Anoma.Accounts
 
   import Anoma.GaraponFixtures
   import Anoma.AccountsFixtures
+
+  describe "buy coupon" do
+    test "enough gas" do
+      owner = user_fixture(%{gas: 100})
+      {:ok, coupon} = Garapon.buy_coupon(owner)
+
+      assert coupon.owner_id == owner.id
+      owner = Accounts.get_user!(owner.id) |> Anoma.Repo.preload(:coupons)
+      assert Enum.count(owner.coupons) == 1
+      assert owner.gas == 0
+    end
+
+    test "not enough gas" do
+      owner = user_fixture(%{gas: 0})
+      {:error, :not_enough_gas} = Garapon.buy_coupon(owner)
+
+      owner = Accounts.get_user!(owner.id) |> Anoma.Repo.preload(:coupons)
+      assert Enum.empty?(owner.coupons)
+    end
+  end
 
   describe "coupons" do
     @invalid_attrs %{}

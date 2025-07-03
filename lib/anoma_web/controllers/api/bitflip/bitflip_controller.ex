@@ -3,8 +3,8 @@ defmodule AnomaWeb.Api.BitflipController do
 
   require Logger
 
-  alias Anoma.Bitflip
   alias Anoma.Assets
+  alias Anoma.Bitflip
   alias Anoma.Bitflip.Bet
   alias AnomaWeb.Api
   alias AnomaWeb.Api.BitflipController.Schemas
@@ -62,7 +62,7 @@ defmodule AnomaWeb.Api.BitflipController do
   """
   @spec price(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def price(conn, _params) do
-    Assets.last_price("BTC-USD") |> tap(&IO.inspect(&1, label: ""))
+    Assets.last_price("BTC-USD")
     render(conn, :price, price: Assets.last_price("BTC-USD"))
   end
 

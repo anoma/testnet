@@ -2,8 +2,8 @@ defmodule AnomaWeb.InviteControllerTest do
   use AnomaWeb.ConnCase
 
   import Anoma.AccountsFixtures
-  alias AnomaWeb.Plugs.AuthPlug
   alias Anoma.Accounts
+  alias AnomaWeb.Plugs.AuthPlug
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -106,7 +106,7 @@ defmodule AnomaWeb.InviteControllerTest do
 
       # assert the user has an invite that is unclaimed
       user = Accounts.get_user!(user.id) |> Anoma.Repo.preload(:invites)
-      assert Enum.count(user.invites) == 0
+      assert Enum.empty?(user.invites)
     end
   end
 

@@ -60,6 +60,7 @@ defmodule AnomaWeb.Router do
 
     # /api/v1/garapon
     scope "/garapon" do
+      post "/buy", CouponController, :buy
       get "/", CouponController, :list
       put "/use", CouponController, :use
     end
