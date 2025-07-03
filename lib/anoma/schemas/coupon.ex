@@ -1,6 +1,6 @@
 defmodule Anoma.Garapon.Coupon do
   @moduledoc """
-  Schema for a daily coupon that a user can use in the daily lottery.
+  Schema for a garapon coupon that a user can use in the daily lottery.
   """
   use Ecto.Schema
   use TypedEctoSchema
@@ -12,7 +12,7 @@ defmodule Anoma.Garapon.Coupon do
 
   @schema %Schema{
     title: "Coupon",
-    description: "Daily coupon for the lottery",
+    description: "Garapon coupon for the lottery",
     type: :object,
     properties: %{
       id: %Schema{type: :integer, description: "Coupon ID"},

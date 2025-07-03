@@ -1,49 +1,33 @@
-defmodule AnomaWeb.Api.GaraponController do
-  use AnomaWeb, :controller
-
-  require Logger
-
-  alias Anoma.Accounts
-  alias AnomaWeb.Api
-  alias AnomaWeb.Api.FitcoinController.Schemas
-
-  action_fallback AnomaWeb.FallbackController
-
-  use OpenApiSpex.ControllerSpecs
-
-  tags ["Garapon"]
-
-  operation :add,
-    security: [%{"authorization" => []}],
-    summary: "Add fitcoin to the account of the user",
-    responses: %{
-      400 => {"Generic error", "application/json", Api.Schemas.Error},
-      200 => {"Failure", "application/json", Api.Schemas.Success}
-    }
-
-  operation :balance,
-    security: [%{"authorization" => []}],
-    summary: "Returns the current fitcoin balance",
-    responses: %{
-      200 => {"Fitcoin balance", "application/json", Schemas.FitcoinBalance},
-      400 => {"Generic error", "application/json", Api.Schemas.Error}
-    }
-
-  @doc """
-  Adds 1 fitcoin to the user's account.
+defmodule AnomaWeb.Api.CouponController.Schemas do
+  @moduledoc """
+  Specifications of common return values from the api.
   """
-  @spec add(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def add(conn, %{}) do
-    user = conn.assigns.current_user
-    {:ok, user} = Accounts.Fitcoin.add_fitcoin(user)
+  alias OpenApiSpex.Schema
 
-    render(conn, :balance, fitcoins: user.fitcoins)
+  defmodule RedeemRequest do
+    @moduledoc false
+    require OpenApiSpex
+
+    OpenApiSpex.schema(%{
+      title: "Coupon redeem request",
+      type: :object,
+      properties: %{
+        id: %Schema{
+          type: :integer,
+          description: "Coupon ID",
+          example: "18d3bb76-2e27-4cd0-9912-b8b259bd3950"
+        }
+      }
+    })
   end
 
-  def balance(conn, %{}) do
-    user = conn.assigns.current_user
-    {:ok, balance} = Accounts.Fitcoin.balance(user)
+  defmodule CouponList do
+    @moduledoc false
+    require OpenApiSpex
 
-    render(conn, :balance, fitcoins: balance)
+    OpenApiSpex.schema(%{
+      type: :object,
+      properties: %{coupons: %Schema{type: :array, items: Anoma.Garapon.Coupon}}
+    })
   end
 end

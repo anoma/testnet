@@ -32,7 +32,7 @@ defmodule AnomaWeb.Api.BetController.Schemas do
 
     OpenApiSpex.schema(%{
       type: :object,
-      properties: %{bets: %Schema{type: :array, items: Anoma.Pricing.Bet}}
+      properties: %{bets: %Schema{type: :array, items: Anoma.Bitflip.Bet}}
     })
   end
 end

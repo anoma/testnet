@@ -53,10 +53,10 @@ defmodule Anoma.Tasks do
   end
 
   @doc """
-  Settle all outstanding bets.
+  Settle all outstanding bitflip.
   """
   def settle_bets do
-    Anoma.Bets.list_bets()
+    Anoma.Bitflip.list_bets()
     |> Enum.each(fn bet ->
       # fetch the user of the bet
       bet = Anoma.Repo.preload(bet, :user)

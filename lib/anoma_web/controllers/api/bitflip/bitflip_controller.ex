@@ -3,8 +3,8 @@ defmodule AnomaWeb.Api.BetController do
 
   require Logger
 
-  alias Anoma.Bets
-  alias Anoma.Pricing.Bet
+  alias Anoma.Bitflip
+  alias Anoma.Bitflip.Bet
   alias AnomaWeb.Api
   alias AnomaWeb.Api.BetController.Schemas
 
@@ -22,7 +22,7 @@ defmodule AnomaWeb.Api.BetController do
     summary: "Place a bet",
     request_body: {"Bet Request", "application/json", Schemas.BetRequest},
     responses: %{
-      200 => {"Bet", "application/json", Anoma.Pricing.Bet},
+      200 => {"Bet", "application/json", Anoma.Bitflip.Bet},
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
@@ -33,7 +33,7 @@ defmodule AnomaWeb.Api.BetController do
       id: [in: :path, schema: Schemas.BetDetailsRequest]
     ],
     responses: %{
-      200 => {"Bet", "application/json", Anoma.Pricing.Bet},
+      200 => {"Bet", "application/json", Anoma.Bitflip.Bet},
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
@@ -55,7 +55,7 @@ defmodule AnomaWeb.Api.BetController do
   def place(conn, %{"up?" => up?, "leverage" => mutliplier, "points" => points}) do
     user = conn.assigns.current_user
 
-    with {:ok, bet} <- Bets.place_bet(user, up?, mutliplier, points) do
+    with {:ok, bet} <- Bitflip.place_bet(user, up?, mutliplier, points) do
       render(conn, :place, bet: bet)
     end
   end

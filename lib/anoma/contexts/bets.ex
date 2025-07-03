@@ -1,4 +1,4 @@
-defmodule Anoma.Bets do
+defmodule Anoma.Bitflip do
   @moduledoc """
   The Pricing context.
   """
@@ -7,14 +7,14 @@ defmodule Anoma.Bets do
 
   alias Anoma.Accounts
   alias Anoma.Accounts.User
-  alias Anoma.Pricing.Bet
+  alias Anoma.Bitflip.Bet
   alias Anoma.Pricing.Currency
   alias Anoma.Repo
 
   require Logger
 
   @doc """
-  Returns the list of bets.
+  Returns the list of bitflip.
 
   ## Examples
 

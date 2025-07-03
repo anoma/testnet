@@ -1,4 +1,4 @@
-defmodule Anoma.BetsFixtures do
+defmodule Anoma.BitflipFixtures do
   @moduledoc """
   This module defines test helpers for creating
   entities via the `Anoma.Pricing` context.
@@ -15,7 +15,7 @@ defmodule Anoma.BetsFixtures do
         points: 42,
         up: true
       })
-      |> Anoma.Bets.create_bet()
+      |> Anoma.Bitflip.create_bet()
 
     bet
   end

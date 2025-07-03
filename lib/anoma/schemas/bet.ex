@@ -1,4 +1,4 @@
-defmodule Anoma.Pricing.Bet do
+defmodule Anoma.Bitflip.Bet do
   @moduledoc """
   Represent a bet that can be placed on the bitcoin price.
   """

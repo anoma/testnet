@@ -69,7 +69,7 @@ defmodule Anoma.Accounts.User do
     has_many :invites, Anoma.Accounts.Invite, foreign_key: :owner_id
 
     # a user can have many bets
-    has_many :bets, Anoma.Pricing.Bet, foreign_key: :user_id
+    has_many :bets, Anoma.Bitflip.Bet, foreign_key: :user_id
 
     has_one :invite, Anoma.Accounts.Invite, foreign_key: :invitee_id
 

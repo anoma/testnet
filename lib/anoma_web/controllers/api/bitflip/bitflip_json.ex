@@ -1,6 +1,6 @@
 defmodule AnomaWeb.Api.BetJSON do
   @doc """
-  Render a list of bets.
+  Render a list of bitflip.
   """
   def bets(%{bets: bets}) do
     %{bets: for(bet <- bets, do: bet(bet))}
