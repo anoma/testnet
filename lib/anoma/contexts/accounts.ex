@@ -313,4 +313,6 @@ defmodule Anoma.Accounts do
     |> User.changeset(attrs)
     |> Repo.insert()
   end
+
+
 end

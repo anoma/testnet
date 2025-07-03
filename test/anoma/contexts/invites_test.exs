@@ -90,5 +90,80 @@ defmodule Anoma.InvitesTest do
       invite = Invites.get_invite!(invite.id)
       assert invite.invitee_id == user.id
     end
+
+    test "invite tree empty" do
+      user = user_fixture()
+      assert Invites.invite_tree(user) == {user.id, []}
+    end
+
+    test "invite tree with one invited user" do
+      user = user_fixture()
+      invited_user = user_fixture()
+
+      # claim this invite by another user
+      invite = invite_fixture(%{owner_id: user.id})
+      assert {:ok, %Invite{} = _invite} = Invites.claim_invite(invite, invited_user)
+
+      # assert the invite exists
+
+      assert Invites.invite_tree(user) == {user.id, [{invited_user.id, []}]}
+    end
+
+    test "invite tree with multiple invited user" do
+      user = user_fixture()
+
+      # invite a few users
+      invited_user_ids =
+        for _ <- 1..10 do
+          invited_user = user_fixture()
+
+          invite =
+            invite_fixture(%{
+              owner_id: user.id,
+              code: Base.encode16(:crypto.strong_rand_bytes(32))
+            })
+
+          assert {:ok, %Invite{} = _invite} = Invites.claim_invite(invite, invited_user)
+          invited_user.id
+        end
+
+      # assert the invite exists
+      invite_tree = Enum.map(invited_user_ids, &{&1, []})
+      assert Invites.invite_tree(user) == {user.id, invite_tree}
+    end
+
+    test "invite tree with multiple invited users and invites for those users." do
+      # start with a single user, that will invite 10 users.
+      user = user_fixture()
+
+      create_invites = fn depth, user, create_invites ->
+        # create a user that will use this invite
+        for _ <- 1..10 do
+          invite =
+            invite_fixture(%{
+              owner_id: user.id,
+              code: Base.encode16(:crypto.strong_rand_bytes(32))
+            })
+
+          invited_user = user_fixture()
+          assert {:ok, %Invite{} = _invite} = Invites.claim_invite(invite, invited_user)
+
+          # create invites for this user too
+          subtree =
+            if depth < 2 do
+              create_invites.(depth + 1, invited_user, create_invites)
+            else
+              []
+            end
+
+          {invited_user.id, subtree}
+        end
+      end
+
+      tree = create_invites.(0, user, create_invites)
+
+      # assert the invite exists
+      assert Invites.invite_tree(user) == {user.id, tree}
+    end
   end
 end

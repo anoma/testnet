@@ -250,4 +250,23 @@ defmodule Anoma.Invites do
         err
     end
   end
+
+  @doc """
+  Returns a tree of invites for this particular user.
+  """
+  @spec invite_tree(User.t()) :: term()
+  def invite_tree(user) do
+    invite_tree =
+      user
+      |> Repo.preload(:invites)
+      |> Map.get(:invites)
+      |> Enum.filter(&(&1.invitee_id != nil))
+      |> Enum.map(fn invite ->
+        invite = Repo.preload(invite, invitee: :invites)
+        invitee = invite.invitee
+         invite_tree(invitee)
+      end)
+
+    {user.id, invite_tree}
+  end
 end

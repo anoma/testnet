@@ -52,7 +52,7 @@ defmodule AnomaWeb.Api.CouponControllerTest do
       # list the coupons, except empty
       conn = put(conn, ~p"/api/v1/garapon/use/", %{id: coupon.id})
 
-      assert %{} == json_response(conn, 200)
+      assert  %{"id" => _, "prize" => _, "prize_amount" => _, "used" => true} = json_response(conn, 200)
     end
 
     test "use a coupon does not work for another users coupon", %{conn: conn} do

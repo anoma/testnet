@@ -57,4 +57,8 @@ defmodule AnomaWeb.Api.UserController do
     user = conn.assigns.current_user
     render(conn, :profile, user: Accounts.get_user!(user.id))
   end
+
+  def invite_tree(conn, %{}) do
+    _user = conn.assigns.current_user
+  end
 end
