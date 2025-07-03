@@ -81,7 +81,8 @@ defmodule Anoma.PromEx.Users do
 
   def open_invites do
     # PromEx has to start before the repo, so the repo might not always be online.
-    if Process.whereis(Anoma.Repo) do
+    IO.inspect Process.whereis(Anoma.Repo), label: "repo"
+    if Process.whereis(Anoma.Repo) != nil do
       %{used: used, unused: unused} = Anoma.Invites.open_invites()
 
       # emit the total invite count for used and unused
