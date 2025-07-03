@@ -21,7 +21,12 @@ defmodule Anoma.Bitflip.Bet do
       points: %Schema{type: :integer, description: "Points bet"},
       settled: %Schema{type: :boolean, description: "Has the bet been settled?"},
       won: %Schema{type: :boolean, description: "Did the user win the bet?"},
-      user_id: %Schema{type: :string, description: "ID of the user who placed this bet"}
+      user_id: %Schema{type: :string, description: "ID of the user who placed this bet"},
+      inserted_at: %Schema{
+        type: :string,
+        description: "Time the bet was placed",
+        format: :datetime
+      }
     },
     required: [:name, :email],
     example: %{
@@ -31,7 +36,8 @@ defmodule Anoma.Bitflip.Bet do
       "multiplier" => 1,
       "user_id" => "296d3862-d189-4add-ada5-b346b1df406a",
       "settled" => false,
-      "won" => false
+      "won" => false,
+      "inserted_at" => "2025-07-02T12:41:40Z"
     },
     "x-struct": __MODULE__
   }
