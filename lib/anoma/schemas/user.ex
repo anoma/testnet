@@ -36,7 +36,7 @@ defmodule Anoma.Accounts.User do
   # ----------------------------------------------------------------------------
   # Schema
 
-  @json_fields [:id, :eth_address, :points, :fitcoins, :twitter_username ]
+  @json_fields [:id, :eth_address, :points, :fitcoins, :twitter_username]
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   typed_schema "users" do

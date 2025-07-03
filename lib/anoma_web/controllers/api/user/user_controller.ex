@@ -49,14 +49,14 @@ defmodule AnomaWeb.Api.UserController do
   def x_auth(conn, %{"code" => code, "code_verifier" => code_verifier}) do
     user = conn.assigns.current_user
 
-    with {:ok, access_token} <- Twitter.fetch_access_token(code, code_verifier)|> tap(&IO.inspect(&1, label: "")),
+    with {:ok, access_token} <-
+           Twitter.fetch_access_token(code, code_verifier),
          {:ok, user_meta_data} <- Twitter.fetch_user_meta_data(access_token) do
       # put the meta data in the user's profile
       {:ok, _} = Accounts.update_user_twitter_data(user, user_meta_data, access_token)
 
       # return an empty response
       json(conn, %{})
-
     end
   end
 
