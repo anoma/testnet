@@ -18,7 +18,6 @@ defmodule Anoma.Accounts.User do
     properties: %{
       id: %Schema{type: :integer, description: "User id"},
       eth_address: %Schema{type: :string, description: "User their ethereum address"},
-      gas: %Schema{type: :integer, description: "Total gas the user has"},
       points: %Schema{type: :integer, description: "Total points the user has"},
       fitcoins: %Schema{type: :integer, description: "Total fitcoins the user has"}
     },
@@ -26,7 +25,6 @@ defmodule Anoma.Accounts.User do
     example: %{
       "id" => "18d3bb76-2e27-4cd0-9912-b8b259bd3950",
       "points" => 1,
-      "gas" => 1,
       "eth_address" => "0xDEADBEEF",
       "fitcoins" => 1234
     },
@@ -38,7 +36,7 @@ defmodule Anoma.Accounts.User do
   # ----------------------------------------------------------------------------
   # Schema
 
-  @json_fields [:id, :eth_address, :gas, :points, :fitcoins]
+  @json_fields [:id, :eth_address, :points, :fitcoins]
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   typed_schema "users" do
@@ -46,7 +44,6 @@ defmodule Anoma.Accounts.User do
     field :email, :string
     field :confirmed_at, :utc_datetime
     field :points, :integer, default: 0
-    field :gas, :integer, default: 0
     field :eth_address, :string
 
     # Fitcoin
@@ -90,7 +87,6 @@ defmodule Anoma.Accounts.User do
       :email,
       :eth_address,
       :points,
-      :gas,
       :twitter_avatar_url,
       :twitter_bio,
       :twitter_id,

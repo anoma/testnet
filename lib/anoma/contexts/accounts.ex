@@ -12,6 +12,30 @@ defmodule Anoma.Accounts do
   require Logger
 
   @doc """
+  Bumps a user's updated_at field to the current timestamp.
+  This is used in context of tracking DAUs.
+  """
+  @spec bump_updated_at(User.t()) :: {:ok, User.t()}
+  def bump_updated_at(user) do
+    user
+    |> Ecto.Changeset.change()
+    |> Repo.update(force: true)
+  end
+
+  @doc """
+  Returns the amount of users that have been active in the last n hours.
+  A user is active if they made a request to the API.
+  """
+  @spec active_last_hour(non_neg_integer()) :: number()
+  def active_last_hour(hours) do
+    threshold = DateTime.utc_now() |> DateTime.add(-1 * hours, :hour)
+
+    User
+    |> where([u], u.updated_at > ^threshold)
+    |> Repo.aggregate(:count)
+  end
+
+  @doc """
   Returns the list of users.
 
   ## Examples

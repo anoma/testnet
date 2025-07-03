@@ -43,12 +43,21 @@ defmodule Anoma.Garapon do
   @doc """
   Returns the total amount of coupons this user has, that have not been used.
   """
+  @spec count_coupons(User.t()) :: {number(), number()}
   def count_coupons(%User{} = user) do
-    Coupon
-    |> where([dp], dp.owner_id == ^user.id)
-    |> group_by([db], db.used)
-    |> select([dp], count("*"))
-    |> Repo.all()
+    used =
+      Coupon
+      |> where([dp], dp.owner_id == ^user.id)
+      |> where([dp], dp.used == true)
+      |> Repo.aggregate(:count)
+
+    unused =
+      Coupon
+      |> where([dp], dp.owner_id == ^user.id)
+      |> where([dp], dp.used == true)
+      |> Repo.aggregate(:count)
+
+      {used, unused}
   end
 
   @doc """

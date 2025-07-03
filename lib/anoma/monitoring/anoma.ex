@@ -69,11 +69,11 @@ defmodule Anoma.PromEx.Users do
           tags: [:id]
         ),
         last_value(
-          [:anoma, :user, :unused_coupons],
-          event_name: [:anoma, :user, :user_info],
-          description: "Amount of unused coupons by a user",
-          measurement: :unused_coupons,
-          tags: [:id]
+          [:anoma, :stats, :users],
+          event_name:  [:anoma, :stats, :users],
+          description: "Active users in the last hours",
+          measurement: :active_users,
+          tags: [:range]
         )
       ]
     )
@@ -82,6 +82,7 @@ defmodule Anoma.PromEx.Users do
   def anoma_stats do
     # PromEx has to start before the repo, so the repo might not always be online.
     anoma_repo_pid = Process.whereis(Anoma.Repo)
+
     if anoma_repo_pid != nil do
       %{used: used, unused: unused} = Anoma.Invites.open_invites()
 
@@ -139,6 +140,18 @@ defmodule Anoma.PromEx.Users do
           }
         )
       end)
+
+      for hours <- [24, 12, 6, 1] do
+        :telemetry.execute(
+          [:anoma, :stats, :users],
+          %{
+            active_users: Anoma.Accounts.active_last_hour(hours)
+          },
+          %{
+            range: hours
+          }
+        )
+      end
     end
   end
 end
