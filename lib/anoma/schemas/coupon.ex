@@ -15,14 +15,12 @@ defmodule Anoma.Garapon.Coupon do
     description: "Garapon coupon for the lottery",
     type: :object,
     properties: %{
-      id: %Schema{type: :integer, description: "Coupon ID"},
-      used: %Schema{type: :boolean, description: "Has the coupon been used?"}
+      id: %Schema{type: :integer, description: "Coupon ID", example: "12345"},
+      used: %Schema{type: :boolean, description: "Has the coupon been used?", example: true},
+      prize:  %Schema{type: :string, description: "What has been won?", example: "fitcoin"},
+      prize_amount: %Schema{type: :integer, description: "How many of `prize` have been won?", example: "120"},
     },
     required: [:name, :email],
-    example: %{
-      "id" => "18d3bb76-2e27-4cd0-9912-b8b259bd3950",
-      "used" => true
-    },
     "x-struct": Anoma.Garapon.Coupon
   }
 

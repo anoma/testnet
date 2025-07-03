@@ -30,7 +30,7 @@ defmodule AnomaWeb.Api.CouponController do
     request_body: {"Coupon Redeem Request", "application/json", Schemas.RedeemRequest},
     responses: %{
       400 => {"Generic error", "application/json", Api.Schemas.Error},
-      200 => {"Failure", "application/json", Api.Schemas.Success}
+      200 => {"Success", "application/json", Garapon.Coupon}
     }
 
   # ----------------------------------------------------------------------------

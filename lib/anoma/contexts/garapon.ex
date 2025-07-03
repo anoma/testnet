@@ -8,6 +8,7 @@ defmodule Anoma.Garapon do
 
   alias Anoma.Garapon.Coupon
   alias Anoma.Accounts.User
+  alias Anoma.Garapon
 
   @doc """
   Returns the list of coupons.
@@ -105,17 +106,37 @@ defmodule Anoma.Garapon do
   def use_coupon(%Coupon{} = coupon) do
     Repo.transaction(fn ->
       # ensure invite is not claimed
-      coupon = get_coupon!(coupon.id)
+      coupon = get_coupon!(coupon.id) |> Repo.preload(:owner)
 
       if coupon.used do
         Repo.rollback(:coupon_already_used)
       else
         # generate a random result for this coupon
-        prize = [:points, :fitcoins, :coupons] |> Enum.shuffle() |> hd() |> Atom.to_string()
+        prize = [:points, :fitcoins, :coupons] |> Enum.shuffle() |> hd()
         prize_amount = (:rand.uniform_real() * 100) |> trunc()
 
+        # update the user with the prize
+        case prize do
+          :points ->
+            {:ok, _user} =
+              Anoma.Accounts.update_user(coupon.owner, %{points: coupon.owner.points + prize_amount})
+
+          :fitcoins ->
+            {:ok, _user} =
+              Anoma.Accounts.update_user(coupon.owner, %{
+                fitcoins: coupon.owner.fitcoins + prize_amount
+              })
+
+          :coupons ->
+              for _ <- 1..prize_amount do
+                {:ok, _coupon} = Garapon.create_coupon(%{
+                  owner_id: coupon.owner.id
+                })
+              end
+        end
+
         coupon
-        |> Coupon.changeset(%{used: true, prize: prize, prize_amount: prize_amount})
+        |> Coupon.changeset(%{used: true, prize: Atom.to_string(prize), prize_amount: prize_amount})
         |> Repo.update()
       end
     end)

@@ -75,6 +75,8 @@ defmodule Anoma.Accounts.User do
 
     has_many :daily_points, Anoma.DailyPoints.DailyPoint
 
+    has_many :coupons, Anoma.Garapon.Coupon, foreign_key: :owner_id
+
     timestamps(type: :utc_datetime)
   end
 

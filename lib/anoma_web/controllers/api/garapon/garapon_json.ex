@@ -9,8 +9,8 @@ defmodule AnomaWeb.Api.CouponJSON do
   @doc """
   Returns success upon using a coupon
   """
-  def use(%{coupon: _coupon}) do
-    %{}
+  def use(%{coupon: coupon}) do
+    coupon
   end
 
   @doc """
