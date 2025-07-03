@@ -47,7 +47,7 @@ defmodule Anoma.Bitflip.Bet do
   # ----------------------------------------------------------------------------
   # Schema
 
-  @json_fields [:__meta__, :__struct__, :user, :inserted_at, :updated_at]
+  @json_fields [:__meta__, :__struct__, :user, :updated_at]
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 
