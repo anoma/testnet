@@ -6,7 +6,7 @@ defmodule AnomaWeb.Api.ExplorerJSON do
     %{daily_points: for(daily_point <- daily_points, do: daily_point(daily_point))}
   end
 
-    def daily_point(%{daily_point: daily_point}) do
+  def daily_point(%{daily_point: daily_point}) do
     daily_point
   end
 

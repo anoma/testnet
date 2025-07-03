@@ -7,8 +7,8 @@ defmodule AnomaWeb.UserChannel do
 
   alias Anoma.Accounts
   alias Anoma.Accounts.User
-  alias Anoma.DailyPoints.DailyPoint
   alias Anoma.DailyPoints
+  alias Anoma.DailyPoints.DailyPoint
   alias AnomaWeb.Plugs.AuthPlug
 
   require Logger

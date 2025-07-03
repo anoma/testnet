@@ -3,10 +3,9 @@ defmodule AnomaWeb.Api.ExplorerController do
 
   require Logger
 
-  alias Anoma.Fitcoin
+  alias Anoma.DailyPoints
   alias AnomaWeb.Api
   alias AnomaWeb.Api.ExplorerController.Schemas
-  alias Anoma.DailyPoints
 
   action_fallback AnomaWeb.FallbackController
 

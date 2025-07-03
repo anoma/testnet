@@ -84,7 +84,6 @@ defmodule AnomaWeb.Router do
     # /api/v1/explorer
     scope "/explorer" do
       get "/", ExplorerController, :list
-
     end
   end
 
