@@ -23,6 +23,7 @@ services:
       - PHX_HOST=${PHX_HOST:-0.0.0.0}
       - COINBASE_API_KEY=${COINBASE_API_KEY}
       - COINBASE_SECRET=${COINBASE_SECRET}
+      - ECTO_WATCH_CLEANUP=cleanup
     depends_on:
       - db
 
