@@ -61,10 +61,10 @@ defmodule Anoma.PromEx do
     [
       Anoma.PromEx.Users,
       # PromEx built in plugins
-      Plugins.Application,
-      Plugins.Beam,
-      {Plugins.Phoenix, router: AnomaWeb.Router, endpoint: AnomaWeb.Endpoint},
-      Plugins.Ecto
+      # Plugins.Application,
+      # Plugins.Beam,
+      # {Plugins.Phoenix, router: AnomaWeb.Router, endpoint: AnomaWeb.Endpoint},
+      # Plugins.Ecto
       # Plugins.Oban,
       # Plugins.PhoenixLiveView,
       # Plugins.Absinthe,

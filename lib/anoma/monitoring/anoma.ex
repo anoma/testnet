@@ -7,9 +7,9 @@ defmodule Anoma.PromEx.Users do
   @impl true
   def polling_metrics(_opts) do
     Polling.build(
-      :anoma_invites,
+      :anoma_stats,
       1000,
-      {__MODULE__, :open_invites, []},
+      {__MODULE__, :anoma_stats, []},
       [
         # Capture information regarding the primary application (i.e the user's application)
         last_value(
@@ -79,10 +79,10 @@ defmodule Anoma.PromEx.Users do
     )
   end
 
-  def open_invites do
+  def anoma_stats do
     # PromEx has to start before the repo, so the repo might not always be online.
-    IO.inspect Process.whereis(Anoma.Repo), label: "repo"
-    if Process.whereis(Anoma.Repo) != nil do
+    anoma_repo_pid = Process.whereis(Anoma.Repo)
+    if anoma_repo_pid != nil do
       %{used: used, unused: unused} = Anoma.Invites.open_invites()
 
       # emit the total invite count for used and unused
@@ -121,7 +121,7 @@ defmodule Anoma.PromEx.Users do
       Anoma.Accounts.list_users()
       |> Anoma.Repo.preload([:bets, invites: [:invitee]])
       |> Enum.each(fn user ->
-        [unused_coupons, used_coupons] = Anoma.Garapon.count_coupons(user)
+        {used_coupons, unused_coupons} = Anoma.Garapon.count_coupons(user)
 
         :telemetry.execute(
           [:anoma, :user, :user_info],
