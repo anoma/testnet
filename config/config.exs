@@ -12,7 +12,8 @@ config :anoma,
   generators: [timestamp_type: :utc_datetime],
   children: [Anoma.Scheduler, Anoma.Coinbase],
   debug_auth: false,
-  promex: true
+  promex: true,
+  git_commit_sha: System.get_env("GIT_COMMIT_SHA", "no-commit-info")
 
 # Configures the endpoint
 config :anoma, AnomaWeb.Endpoint,

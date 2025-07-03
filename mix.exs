@@ -59,7 +59,8 @@ defmodule Anoma.MixProject do
       {:prom_ex, "~> 1.11.0"},
       {:ex_keccak, "~> 0.7.6"},
       {:ex_secp256k1, "~> 0.7.4"},
-      {:hammer, "~> 7.0.0"}
+      {:hammer, "~> 7.0.0"},
+      {:plug_health, "~> 0.1.0"}
     ]
   end
 

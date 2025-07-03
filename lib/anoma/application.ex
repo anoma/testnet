@@ -8,9 +8,12 @@ defmodule Anoma.Application do
   alias Anoma.Accounts.User
   alias Anoma.DailyPoints.DailyPoint
 
+  require Logger
+
   @impl true
   def start(_type, _args) do
-    children =
+    Logger.info("Application commit: #{Application.get_env(:anoma, :git_commit_sha)}")
+      children =
       if Application.get_env(:anoma, :promex) do
         [Anoma.PromEx]
       else

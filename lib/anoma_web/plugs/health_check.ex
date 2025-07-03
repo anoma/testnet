@@ -10,8 +10,8 @@ defmodule AnomaWeb.Plugs.HealthCheck do
   # If the request path matches "/health", we return a 200 response.
   def call(%Plug.Conn{request_path: "/health"} = conn, _opts) do
     conn
-    |> send_resp(200, "")
-    # Halts further processing of the request.
+    |> put_resp_content_type("application/json", nil)
+    |> send_resp(:ok, ~s({"commit": "#{Application.get_env(:anoma, :git_commit_sha)}", "version": "#{Application.spec(:anoma, :vsn)}"}))
     |> halt()
   end
 

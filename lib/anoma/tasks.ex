@@ -55,7 +55,7 @@ defmodule Anoma.Tasks do
   Settle all outstanding bitflip.
   """
   def settle_bets do
-    Logger.warning("settling bets")
+    Logger.debug("settling bets")
 
     Anoma.Bitflip.list_unsettled_bets()
     |> Enum.each(&Anoma.Bitflip.settle_bet/1)
