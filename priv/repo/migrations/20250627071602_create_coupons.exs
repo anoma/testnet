@@ -6,6 +6,8 @@ defmodule Anoma.Repo.Migrations.CreateGarapon do
       add(:id, :uuid, primary_key: true)
       add :owner_id, references(:users, on_delete: :delete_all, type: :uuid)
       add :used, :boolean, default: false
+      add :prize, :string
+      add :prize_amount, :integer
       timestamps(type: :utc_datetime)
     end
 

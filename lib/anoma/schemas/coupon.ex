@@ -39,6 +39,9 @@ defmodule Anoma.Garapon.Coupon do
     # a coupon belongs to a user
     belongs_to :owner, Anoma.Accounts.User
 
+    field :prize, :string
+    field :prize_amount, :integer
+
     # whether the coupon is used or not
     field :used, :boolean, default: false
 
@@ -48,7 +51,7 @@ defmodule Anoma.Garapon.Coupon do
   @doc false
   def changeset(coupon, attrs) do
     coupon
-    |> cast(attrs, [:owner_id, :used])
+    |> cast(attrs, [:owner_id, :used, :prize, :prize_amount])
     |> validate_required([:owner_id])
   end
 end

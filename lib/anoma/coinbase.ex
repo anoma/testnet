@@ -40,7 +40,8 @@ defmodule Anoma.Coinbase do
       {:ok, %{product_id: ticker, price: price, time: timestamp}} ->
         {price, ""} = Float.parse(price)
 
-        {:ok, _} = Anoma.Assets.create_currency(%{currency: ticker, price: price, timestamp: timestamp})
+        {:ok, _} =
+          Anoma.Assets.create_currency(%{currency: ticker, price: price, timestamp: timestamp})
 
       _ ->
         :noop

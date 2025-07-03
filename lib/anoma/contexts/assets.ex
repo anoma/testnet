@@ -54,7 +54,8 @@ defmodule Anoma.Assets do
     |> Currency.changeset(attrs)
     |> Repo.insert(
       on_conflict: :nothing,
-      conflict_target: [:currency, :timestamp])
+      conflict_target: [:currency, :timestamp]
+    )
   end
 
   @doc """

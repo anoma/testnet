@@ -110,8 +110,12 @@ defmodule Anoma.Garapon do
       if coupon.used do
         Repo.rollback(:coupon_already_used)
       else
+        # generate a random result for this coupon
+        prize = [:points, :fitcoins, :coupons] |> Enum.shuffle() |> hd() |> Atom.to_string()
+        prize_amount = (:rand.uniform_real() * 100) |> trunc()
+
         coupon
-        |> Coupon.changeset(%{used: true})
+        |> Coupon.changeset(%{used: true, prize: prize, prize_amount: prize_amount})
         |> Repo.update()
       end
     end)
