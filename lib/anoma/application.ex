@@ -13,7 +13,8 @@ defmodule Anoma.Application do
   @impl true
   def start(_type, _args) do
     Logger.info("Application commit: #{Application.get_env(:anoma, :git_commit_sha)}")
-      children =
+
+    children =
       if Application.get_env(:anoma, :promex) do
         [Anoma.PromEx]
       else

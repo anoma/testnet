@@ -41,6 +41,17 @@ defmodule Anoma.Garapon do
   end
 
   @doc """
+  Returns the total amount of coupons this user has, that have not been used.
+  """
+  def count_coupons(%User{} = user) do
+    Coupon
+    |> where([dp], dp.owner_id == ^user.id)
+    |> group_by([db], db.used)
+    |> select([dp], count("*"))
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single coupon.
 
   Raises `Ecto.NoResultsError` if the Coupon does not exist.

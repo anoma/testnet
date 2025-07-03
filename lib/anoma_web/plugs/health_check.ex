@@ -11,7 +11,10 @@ defmodule AnomaWeb.Plugs.HealthCheck do
   def call(%Plug.Conn{request_path: "/health"} = conn, _opts) do
     conn
     |> put_resp_content_type("application/json", nil)
-    |> send_resp(:ok, ~s({"commit": "#{Application.get_env(:anoma, :git_commit_sha)}", "app_version": "#{Application.spec(:anoma, :vsn)}"}))
+    |> send_resp(
+      :ok,
+      ~s({"commit": "#{Application.get_env(:anoma, :git_commit_sha)}", "app_version": "#{Application.spec(:anoma, :vsn)}"})
+    )
     |> halt()
   end
 

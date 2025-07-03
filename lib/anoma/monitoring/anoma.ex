@@ -60,64 +60,92 @@ defmodule Anoma.PromEx.Users do
           description: "Sent invites per user",
           measurement: :used_invites,
           tags: [:id]
+        ),
+        last_value(
+          [:anoma, :user, :made_bets],
+          event_name: [:anoma, :user, :user_info],
+          description: "Amount of bets made by a user",
+          measurement: :bets,
+          tags: [:id]
+        ),
+        last_value(
+          [:anoma, :user, :used_coupons],
+          event_name: [:anoma, :user, :user_info],
+          description: "Amount of used coupons by a user",
+          measurement: :used_coupons,
+          tags: [:id]
+        ),
+        last_value(
+          [:anoma, :user, :unused_coupons],
+          event_name: [:anoma, :user, :user_info],
+          description: "Amount of unused coupons by a user",
+          measurement: :unused_coupons,
+          tags: [:id]
         )
       ]
     )
   end
 
   def open_invites do
-    %{used: used, unused: unused} = Anoma.Invites.open_invites()
+    # PromEx has to start before the repo, so the repo might not always be online.
+    if Process.whereis(Anoma.Repo) do
+      %{used: used, unused: unused} = Anoma.Invites.open_invites()
 
-    # emit the total invite count for used and unused
-    :telemetry.execute(
-      [:anoma, :invites, :count],
-      %{
-        count: used
-      },
-      %{
-        status: "used"
-      }
-    )
-
-    :telemetry.execute(
-      [:anoma, :invites, :count],
-      %{
-        count: unused
-      },
-      %{
-        status: "unused"
-      }
-    )
-
-    # emit the total amount of users
-    :telemetry.execute(
-      [:anoma, :users, :count],
-      %{
-        count: Enum.count(Anoma.Accounts.list_users())
-      },
-      %{
-        status: "unused"
-      }
-    )
-
-    # emit metrics per user
-
-    Anoma.Accounts.list_users()
-    |> Anoma.Repo.preload(invites: [:invitee])
-    |> Enum.each(fn user ->
+      # emit the total invite count for used and unused
       :telemetry.execute(
-        [:anoma, :user, :user_info],
+        [:anoma, :invites, :count],
         %{
-          gas: user.gas,
-          points: user.points,
-          fitcoins: user.fitcoins,
-          invites: Enum.count(user.invites),
-          used_invites: Enum.count(user.invites, fn invite -> invite.invitee != nil end)
+          count: used
         },
         %{
-          id: user.id
+          status: "used"
         }
       )
-    end)
+
+      :telemetry.execute(
+        [:anoma, :invites, :count],
+        %{
+          count: unused
+        },
+        %{
+          status: "unused"
+        }
+      )
+
+      # emit the total amount of users
+      :telemetry.execute(
+        [:anoma, :users, :count],
+        %{
+          count: Enum.count(Anoma.Accounts.list_users())
+        },
+        %{
+          status: "unused"
+        }
+      )
+
+      # emit metrics per user
+      Anoma.Accounts.list_users()
+      |> Anoma.Repo.preload([:bets, invites: [:invitee]])
+      |> Enum.each(fn user ->
+        [unused_coupons, used_coupons] = Anoma.Garapon.count_coupons(user)
+
+        :telemetry.execute(
+          [:anoma, :user, :user_info],
+          %{
+            gas: user.gas,
+            points: user.points,
+            fitcoins: user.fitcoins,
+            invites: Enum.count(user.invites),
+            used_invites: Enum.count(user.invites, fn invite -> invite.invitee != nil end),
+            bets: Anoma.Bitflip.made_bets(user),
+            unused_coupons: unused_coupons,
+            used_coupons: used_coupons
+          },
+          %{
+            id: user.id
+          }
+        )
+      end)
+    end
   end
 end

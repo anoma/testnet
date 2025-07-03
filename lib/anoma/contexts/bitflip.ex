@@ -26,6 +26,16 @@ defmodule Anoma.Bitflip do
     Repo.all(Bet)
   end
 
+  @spec made_bets(User.t()) :: number()
+  def made_bets(user) do
+    user_id = user.id
+
+    Bet
+    |> where([b], b.user_id == ^user_id)
+    |> select([b], count("*"))
+    |> Repo.one()
+  end
+
   @doc """
   Returns the list of bets that are not settled.
 
