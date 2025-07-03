@@ -32,6 +32,14 @@ defmodule AnomaWeb.Api.InviteController do
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
+  operation :invite_tree,
+    security: [%{"authorization" => []}],
+    summary: "List invitation tree",
+    responses: %{
+      200 => {"List of invites", "application/json", Schemas.InviteTree},
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
+    }
+
   # ----------------------------------------------------------------------------
   # Actions
 
@@ -57,5 +65,14 @@ defmodule AnomaWeb.Api.InviteController do
          invites <- Invites.invites_for(user) do
       render(conn, :list_invites, invites: invites)
     end
+  end
+
+  @doc """
+  Return the invite tree for this user.
+  """
+  def invite_tree(conn, %{}) do
+    user = conn.assigns.current_user
+    tree = Invites.invite_tree(user)
+    render(conn, :tree, tree: tree)
   end
 end

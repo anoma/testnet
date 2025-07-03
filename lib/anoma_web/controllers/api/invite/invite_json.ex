@@ -19,4 +19,8 @@ defmodule AnomaWeb.Api.InviteJSON do
   def invite(invite) do
     invite
   end
+
+  def tree(%{tree: {id, subtrees}}) do
+    %{user_id: id, tree: for(subtree <- subtrees, do: tree(%{tree: subtree}))}
+  end
 end

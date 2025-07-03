@@ -68,6 +68,7 @@ defmodule AnomaWeb.Router do
     scope "/invite" do
       get "/", InviteController, :list_invites
       put "/redeem", InviteController, :redeem_invite
+      get "/tree", InviteController, :invite_tree
     end
 
     # /api/v1/bitflip

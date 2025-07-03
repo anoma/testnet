@@ -138,7 +138,7 @@ defmodule Anoma.InvitesTest do
 
       create_invites = fn depth, user, create_invites ->
         # create a user that will use this invite
-        for _ <- 1..10 do
+        for _ <- 1..5 do
           invite =
             invite_fixture(%{
               owner_id: user.id,
@@ -150,7 +150,7 @@ defmodule Anoma.InvitesTest do
 
           # create invites for this user too
           subtree =
-            if depth < 2 do
+            if depth < 3 do
               create_invites.(depth + 1, invited_user, create_invites)
             else
               []
