@@ -2,20 +2,19 @@
 
 This is the backend implementation of the Anoma testnet application.
 
-To run this locally, you need to use a Twitter application. Ask Christophe for the client id and client secret for his application, to make it all a bit easier to use.
 
-## 💾 From source
 
-```shell
-export TWITTER_CLIENT_ID="client_id_here"
-export TWITTER_CLIENT_SECRET="client_secret_here"
-```
+## 🪙 Coinbase
 
-Then, to use the prototype `index.html`, update the `script.js` file based on the environment variables.
+This application makes use of Coinbase's websocket to get the latest BTC price
+information. When running in `dev` it uses the sandbox endpoint, so no
+credentials are required.
+If you run in `prod` mode, these credentials are required.
 
-```shell
-sed -i "s/twitterClientId: '[^']*'/twitterClientId: '$TWITTER_CLIENT_ID'/" priv/static/script.js
-```
+The credentials are read from `COINBASE_API_KEY` and `COINBASE_SECRET`
+environment variables.
+
+## 💾 Run from source
 
 Start a Docker database for this repository.
 
@@ -26,7 +25,9 @@ docker compose --file scripts/docker-compose.yml up -d db
 Run the application and open the webpage.
 
 ```shell
-# create the database (this will nuke existing databases)
+# fetch the dependencies
+mix deps.get
+# create the database (this will nuke existing databases) and seed it with some test data
 mix ecto.reset
 # run the server
 iex -S mix phx.server
@@ -34,12 +35,8 @@ iex -S mix phx.server
 
 ## 🐳 Docker
 
-Make sure you update the `TWITTER_CLIENT*` values in the `docker-compose.yml` file.
 ```shell
 docker compose --file scripts/docker-compose.yml up
 ```
-
-
-**⚠️ Important ⚠️**:  the meta data of a user is currently hardcoded to avoid hitting the twitter rate limit. Update this if you want to use real meta data. Toggle the boolean value at `lib/anoma_web/twitter.ex:116` to disable the cache.
 
 Navigate to [http://localhost:4000/index.html](http://localhost:4000/index.html)
