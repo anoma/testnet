@@ -8,6 +8,7 @@ defmodule Anoma.Invites do
   alias Anoma.Accounts
   alias Anoma.Invites.Invite
   alias Anoma.Accounts.User
+  alias Anoma.Accounts
   alias Anoma.Repo
 
   require Logger
@@ -144,10 +145,10 @@ defmodule Anoma.Invites do
       {:error, %Ecto.Changeset{}}
   """
   @spec claim_invite(Invite.t(), User.t()) :: {:ok, Invite.t()} | {:error, atom()}
-  def claim_invite(%Invite{} = invite, %User{} = user) do
+  def claim_invite(%Invite{} = invite, %User{} = user, opts \\ [reward: 0]) do
     Repo.transaction(fn ->
       # ensure invite is not claimed
-      invite = get_invite!(invite.id)
+      invite = get_invite!(invite.id) |> Repo.preload(:owner)
       user = Accounts.get_user!(user.id) |> Repo.preload(:invite)
 
       cond do
@@ -158,20 +159,19 @@ defmodule Anoma.Invites do
           Repo.rollback(:invite_already_claimed)
 
         true ->
+          # add points to the inviter
+          if invite.owner != nil do
+            reward = Keyword.get(opts, :reward, 10)
+            {:ok, _} = Accounts.add_points_to_user(invite.owner, reward)
+          end
+
           invite
           |> Repo.preload(:invitee)
           |> Invite.changeset(%{})
           |> Ecto.Changeset.put_assoc(:invitee, user)
-          |> Repo.update()
+          |> Repo.update!()
       end
     end)
-    |> case do
-      {:ok, res} ->
-        res
-
-      err ->
-        err
-    end
   end
 
   @doc """
@@ -264,9 +264,31 @@ defmodule Anoma.Invites do
       |> Enum.map(fn invite ->
         invite = Repo.preload(invite, invitee: :invites)
         invitee = invite.invitee
-         invite_tree(invitee)
+        invite_tree(invitee)
       end)
 
     {user.id, invite_tree}
+  end
+
+  @doc """
+  Lets a user buy an invite with gas.
+  """
+  @spec buy_invite(User.t()) :: {:ok, Invite.t()} | {:error, :not_enough_gas}
+  def buy_invite(user) do
+    Repo.transaction(fn ->
+      user = Accounts.get_user!(user.id)
+
+      if user.gas < 100 do
+        Repo.rollback(:not_enough_gas)
+      else
+        {:ok, invite} =
+          create_invite(%{
+            owner_id: user.id,
+            code: Base.encode16(:crypto.strong_rand_bytes(8))
+          })
+
+        invite
+      end
+    end)
   end
 end

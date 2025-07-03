@@ -128,15 +128,20 @@ defmodule Anoma.Garapon do
               })
 
           :coupons ->
-              for _ <- 1..prize_amount do
-                {:ok, _coupon} = Garapon.create_coupon(%{
+            for _ <- 1..prize_amount do
+              {:ok, _coupon} =
+                Garapon.create_coupon(%{
                   owner_id: coupon.owner.id
                 })
-              end
+            end
         end
 
         coupon
-        |> Coupon.changeset(%{used: true, prize: Atom.to_string(prize), prize_amount: prize_amount})
+        |> Coupon.changeset(%{
+          used: true,
+          prize: Atom.to_string(prize),
+          prize_amount: prize_amount
+        })
         |> Repo.update()
       end
     end)

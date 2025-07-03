@@ -40,6 +40,14 @@ defmodule AnomaWeb.Api.InviteController do
       400 => {"Generic error", "application/json", Api.Schemas.Error}
     }
 
+  operation :buy,
+    security: [%{"authorization" => []}],
+    summary: "Buy an invite with gas",
+    responses: %{
+      200 => {"Bought invite", "application/json", Invites.Invite},
+      400 => {"Generic error", "application/json", Api.Schemas.Error}
+    }
+
   # ----------------------------------------------------------------------------
   # Actions
 
@@ -74,5 +82,17 @@ defmodule AnomaWeb.Api.InviteController do
     user = conn.assigns.current_user
     tree = Invites.invite_tree(user)
     render(conn, :tree, tree: tree)
+  end
+
+  @doc """
+  Lets the user buy an invite with gas.
+  """
+
+  def buy(conn, _params) do
+    user = conn.assigns.current_user
+
+    with {:ok, invite} <- Invites.buy_invite(user) do
+      render(conn, :invite, invite: invite)
+    end
   end
 end

@@ -16,6 +16,10 @@ defmodule AnomaWeb.Api.InviteJSON do
   @doc """
   Renders a single invite.
   """
+  def invite(%{invite: invite}) do
+    invite
+  end
+
   def invite(invite) do
     invite
   end

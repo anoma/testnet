@@ -66,6 +66,7 @@ defmodule AnomaWeb.Router do
 
     # /api/v1/invite
     scope "/invite" do
+      post "/buy", InviteController, :buy
       get "/", InviteController, :list_invites
       put "/redeem", InviteController, :redeem_invite
       get "/tree", InviteController, :invite_tree

@@ -67,9 +67,10 @@ defmodule Anoma.Tasks do
   def create_daily_coupons do
     Anoma.Accounts.list_users()
     |> Enum.each(fn user ->
-      {:ok, _coupon} = Anoma.Garapon.create_coupon(%{
-        owner_id: user.id
-      })
+      {:ok, _coupon} =
+        Anoma.Garapon.create_coupon(%{
+          owner_id: user.id
+        })
     end)
   end
 end

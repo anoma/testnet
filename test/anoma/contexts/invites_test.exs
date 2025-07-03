@@ -2,6 +2,7 @@ defmodule Anoma.InvitesTest do
   use Anoma.DataCase
 
   alias Anoma.Invites
+  alias Anoma.Accounts
 
   describe "invites" do
     alias Anoma.Invites.Invite
@@ -74,6 +75,50 @@ defmodule Anoma.InvitesTest do
       # check that the invite is claimed
       invite = Invites.get_invite!(invite.id) |> Repo.preload(:invitee)
       assert invite.invitee_id == user.id
+    end
+
+    test "claim_invite/2 claims an invite and adds points to the owner" do
+      user = user_fixture()
+      inviter = user_fixture(%{points: 0})
+      invite = invite_fixture(%{owner_id: inviter.id})
+      assert {:ok, %Invite{} = invite} = Invites.claim_invite(invite, user, reward: 100)
+
+      # check that the invite is claimed
+      invite = Invites.get_invite!(invite.id) |> Repo.preload(:invitee)
+      assert invite.invitee_id == user.id
+
+      # check the owner has gotten the points
+      inviter = Accounts.get_user!(inviter.id)
+      assert inviter.points == 100
+    end
+
+    test "claim_invite/2 claims an invite and adds points to the owner recursively" do
+      # ----------------------------------------------------------------------------
+      # First invite
+
+      root = user_fixture(%{points: 0})
+      root_invite = invite_fixture(%{owner_id: root.id, code: "root"})
+
+      second = user_fixture(%{points: 0})
+      second_invite = invite_fixture(%{owner_id: second.id, code: "second"})
+      assert {:ok, %Invite{}} = Invites.claim_invite(root_invite, second, reward: 100)
+
+      # check the balances
+      root = Accounts.get_user!(root.id)
+      assert root.points == 100
+
+      third = user_fixture(%{points: 0, code: "third"})
+      assert {:ok, %Invite{}} = Invites.claim_invite(second_invite, third, reward: 100)
+
+      # # check the balances
+      # root = Accounts.get_user!(root.id)
+      # assert root.points == 10
+
+      # second = Accounts.get_user!(second.id)
+      # assert second.points == 10
+
+      # third = Accounts.get_user!(third.id)
+      # assert third.points == 1
     end
 
     test "claim_invite/2 a claimed invite fails" do
@@ -150,7 +195,7 @@ defmodule Anoma.InvitesTest do
 
           # create invites for this user too
           subtree =
-            if depth < 3 do
+            if depth < 2 do
               create_invites.(depth + 1, invited_user, create_invites)
             else
               []

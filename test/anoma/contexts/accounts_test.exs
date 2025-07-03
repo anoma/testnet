@@ -131,7 +131,7 @@ defmodule Anoma.AccountsTest do
           })
 
         # let the invitee use this invite
-        assert {:ok, %Invite{} = _invite} = Invites.claim_invite(invite, invitee)
+        assert {:ok, %Invite{} = _invite} = Invites.claim_invite(invite, invitee, reward: 0)
 
         invitee
       end)

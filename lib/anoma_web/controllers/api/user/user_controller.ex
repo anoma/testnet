@@ -57,5 +57,4 @@ defmodule AnomaWeb.Api.UserController do
     user = conn.assigns.current_user
     render(conn, :profile, user: Accounts.get_user!(user.id))
   end
-
 end
