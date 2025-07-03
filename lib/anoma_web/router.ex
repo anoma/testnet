@@ -80,6 +80,12 @@ defmodule AnomaWeb.Router do
       get "/price", BitflipController, :price
       get "/:id", BitflipController, :get
     end
+
+    # /api/v1/explorer
+    scope "/explorer" do
+      get "/", ExplorerController, :list
+
+    end
   end
 
   if Mix.env() == :dev do

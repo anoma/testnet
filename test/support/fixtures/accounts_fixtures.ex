@@ -4,7 +4,7 @@ defmodule Anoma.AccountsFixtures do
   entities via the `Anoma.Accounts` context.
   """
   alias Anoma.Accounts
-  alias Anoma.DailyPoints.DailyPoints
+  alias Anoma.DailyPoints
   alias Anoma.Invites
 
   @doc """

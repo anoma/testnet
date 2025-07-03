@@ -2,7 +2,7 @@ defmodule Anoma.Tasks do
   @moduledoc """
   Defines a few functions that are being run as a task by the Quantum scheduler.
   """
-  alias Anoma.DailyPoints.DailyPoints
+  alias Anoma.DailyPoints
   alias Anoma.Invites
 
   require Logger

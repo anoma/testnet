@@ -1,4 +1,4 @@
-defmodule Anoma.DailyPoints.DailyPoints do
+defmodule Anoma.DailyPoints do
   @moduledoc """
   The DailyPoints context.
   """
