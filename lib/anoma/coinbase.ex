@@ -26,7 +26,6 @@ defmodule Anoma.Coinbase do
 
     try do
       process_message(msg)
-
     rescue
       e ->
         Logger.error("failed to process coinbase message #{inspect(e)}")
