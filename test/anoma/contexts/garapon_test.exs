@@ -182,7 +182,7 @@ defmodule Anoma.BitflipTest do
         currency_fixture(%{
           currency: "BTC-USD",
           price: 101.0,
-          timestamp: ~U[2025-07-01 09:02:00Z]
+          timestamp: ~U[2025-07-01 09:01:03Z]
         })
 
       # create a bet the price will go up
@@ -221,7 +221,7 @@ defmodule Anoma.BitflipTest do
       # value before bet
       currency_fixture(%{currency: "BTC-USD", price: 100.0, timestamp: ~U[2025-07-01 09:00:00Z]})
       # value after bet
-      currency_fixture(%{currency: "BTC-USD", price: 101.0, timestamp: ~U[2025-07-01 09:00:59Z]})
+      currency_fixture(%{currency: "BTC-USD", price: 101.0, timestamp: ~U[2025-07-01 09:00:50Z]})
 
       # create a bet the price will go up
       user = user_fixture(%{points: 1, fitcoins: 10})
@@ -233,7 +233,8 @@ defmodule Anoma.BitflipTest do
           user_id: user.id,
           multiplier: 1,
           points: 1,
-          inserted_at: ~U[2025-07-01 09:00:00Z]
+          inserted_at: ~U[2025-07-01 09:00:00Z],
+          price_at_bet: 100.0
         })
 
       # assert the bet is not settled
@@ -258,7 +259,7 @@ defmodule Anoma.BitflipTest do
         currency_fixture(%{
           currency: "BTC-USD",
           price: 101.0,
-          timestamp: ~U[2025-07-01 09:02:00Z]
+          timestamp: ~U[2025-07-01 09:01:00Z]
         })
 
       # create a bet the price will go up

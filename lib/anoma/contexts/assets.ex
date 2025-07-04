@@ -63,10 +63,15 @@ defmodule Anoma.Assets do
   E.g., asking for the currency at 12:01 will return the newest value, since the timestamp, or nil if there arent any.
   """
   def price_at(currency, timestamp) do
+    # the price can be 5 seconds older than right now
+    start_window = DateTime.add(timestamp, -5, :second)
+    end_window = DateTime.add(timestamp, 5, :second)
+
     from(c in Currency,
       where: c.currency == ^currency,
-      where: c.timestamp >= ^timestamp,
-      order_by: {:asc, c.timestamp},
+      where: c.timestamp >= ^start_window,
+      where: c.timestamp <= ^end_window,
+      order_by: {:desc, c.timestamp},
       limit: 1
     )
     |> Repo.one()
