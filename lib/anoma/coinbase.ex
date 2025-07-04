@@ -27,23 +27,23 @@ defmodule Anoma.Coinbase do
     WebSockex.cast(self(), {:send, heartbeat})
 
     # subscribe to ticker
-    ticker = generate_subscription_message()
-    WebSockex.cast(self(), {:send, ticker})
+    # ticker = subscription_message()
+    # WebSockex.cast(self(), {:send, ticker})
 
     {:ok, state}
   end
 
   def handle_frame({_type, msg}, state) do
-    try do
-      IO.inspect(msg, label: "message")
-      process_message(msg)
-    rescue
-      e ->
-        Logger.error("failed to process coinbase message #{inspect(e)}")
-    catch
-      e ->
-        Logger.error("failed to procress coinbase message #{inspect(e)}")
-    end
+    # try do
+    IO.inspect(msg, label: "message")
+    #   process_message(msg)
+    # rescue
+    #   e ->
+    #     Logger.error("failed to process coinbase message #{inspect(e)}")
+    # catch
+    #   e ->
+    #     Logger.error("failed to procress coinbase message #{inspect(e)}")
+    # end
 
     {:ok, state}
   end
@@ -56,7 +56,7 @@ defmodule Anoma.Coinbase do
   end
 
   def handle_disconnect(%{reason: {:local, reason}}, state) do
-    Logger.info("Local close with reason: #{inspect(reason)}")
+    IO.inspect("Local close with reason: #{inspect(reason)}")
     {:ok, state}
   end
 
@@ -104,7 +104,7 @@ defmodule Anoma.Coinbase do
   end
 
   # generate the subscription message with the api key
-  def generate_subscription_message do
+  def subscription_message do
     coinbase_api_key = Application.get_env(:anoma, :coinbase_api_key)
     {signature, timestamp} = generate_signature()
 
@@ -113,7 +113,7 @@ defmodule Anoma.Coinbase do
       type: "subscribe",
       signature: signature,
       key: coinbase_api_key,
-      channels: ["ticker_batch", "heartbeats"],
+      channels: ["ticker_batch"],
       product_ids: ["BTC-USD"],
       passphrase: ""
     }
@@ -128,9 +128,8 @@ defmodule Anoma.Coinbase do
       type: "subscribe",
       signature: signature,
       key: coinbase_api_key,
-      channels: [
-        %{name: "heartbeat", product_ids: ["BTC-USD"]}
-      ],
+      channels: ["heartbeat"],
+      product_ids: ["BTC-USD"],
       passphrase: ""
     }
   end
