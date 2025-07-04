@@ -3,17 +3,22 @@
 //----------------------------------------------------------------------------
 // Configuration
 
-const CONFIG = {
-  twitterClientId: 'RG5ZOVoydWJlZ3FOSnVTa1dDTnA6MTpjaQ', // X OAuth 2.0 Client ID
+
+let websocket = `wss://${window.location.host}/socket/websocket`
+if (window.location.protocol == "http:") {
+  websocket = `ws://${window.location.host}/socket/websocket`
+}
+let CONFIG = {
+  twitterClientId: 'VHJrYW9xbV9PV2xYU092RkdMNTA6MTpjaQ', // X OAuth 2.0 Client ID
   // backendUrl: 'http://localhost:4000',
   // redirectUri: 'http://localhost:4000/index.html', // Exact match with backend
   // websocketUrl: 'ws://localhost:4000/socket/websocket',
   // backendUrl: 'https://anoma.genserver.be',
   // redirectUri: 'https://anoma.genserver.be/index.html', // Exact match with backend
   // websocketUrl: 'wss://anoma.genserver.be/socket/websocket',
-  backendUrl: 'https://d4ukhw26jb5lr.cloudfront.net',
-  redirectUri: 'https://d4ukhw26jb5lr.cloudfront.net/index.html', // Exact match with backend
-  websocketUrl: 'wss://d4ukhw26jb5lr.cloudfront.net/socket/websocket',
+  backendUrl: window.location.origin,
+  redirectUri: `${window.location.origin}`, // Exact match with backend
+  websocketUrl: websocket
 };
 
 //----------------------------------------------------------------------------
@@ -28,6 +33,7 @@ let currentJwt = null;
 // Main entrypoint
 
 document.addEventListener('DOMContentLoaded', async function () {
+  console.log(CONFIG)
   // set some debug data on the webpage
   setDebugData();
 
@@ -100,6 +106,7 @@ async function doXLogin() {
   const codeChallenge = await generateCodeChallenge(codeVerifier);
 
   // create the url to authenticate with X.com
+  console.log(CONFIG.redirectUri)
   const twitterUrl =
     `https://twitter.com/i/oauth2/authorize?` +
     `response_type=code&` +

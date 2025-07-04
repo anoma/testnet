@@ -26,7 +26,7 @@ defmodule AnomaWeb.Twitter do
       code: code,
       grant_type: "authorization_code",
       client_id: client_id,
-      redirect_uri: "#{AnomaWeb.Endpoint.url()}/index.html",
+      redirect_uri: "#{AnomaWeb.Endpoint.url()}",
       code_verifier: code_verifier
     }
 
