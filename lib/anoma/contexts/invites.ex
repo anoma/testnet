@@ -8,6 +8,7 @@ defmodule Anoma.Invites do
   alias Anoma.Accounts
   alias Anoma.Accounts.User
   alias Anoma.Invites.Invite
+  alias Anoma.Pointlog
   alias Anoma.Repo
 
   require Logger
@@ -161,7 +162,7 @@ defmodule Anoma.Invites do
           # add points to the inviter
           if invite.owner != nil do
             reward = Keyword.get(opts, :reward, 10)
-            {:ok, _} = Accounts.add_points_to_user(invite.owner, reward)
+            {:ok, _} = Accounts.add_points_to_user(invite.owner, reward, user)
           end
 
           invite
@@ -254,7 +255,7 @@ defmodule Anoma.Invites do
   Returns a tree of invites for this particular user.
   """
   @spec invite_tree(User.t()) :: term()
-  def invite_tree(user) do
+  def invite_tree(user, reward \\ 0) do
     invite_tree =
       user
       |> Repo.preload(:invites)
@@ -263,10 +264,13 @@ defmodule Anoma.Invites do
       |> Enum.map(fn invite ->
         invite = Repo.preload(invite, invitee: :invites)
         invitee = invite.invitee
-        invite_tree(invitee)
+
+        # points earned by invitee
+        points_earned = Pointlog.points_obtained_by(user.id, invitee.id)
+        invite_tree(invitee, points_earned)
       end)
 
-    {user.id, invite_tree}
+    {user.id, invite_tree, reward}
   end
 
   @doc """

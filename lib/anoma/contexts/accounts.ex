@@ -6,6 +6,7 @@ defmodule Anoma.Accounts do
   import Ecto.Query, warn: false
 
   alias Anoma.Accounts.User
+  alias Anoma.Pointlog
   alias Anoma.Repo
   alias AnomaWeb.Twitter
 
@@ -270,7 +271,7 @@ defmodule Anoma.Accounts do
 
   """
   @spec add_points_to_user(User.t(), integer()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
-  def add_points_to_user(%User{} = user, points) when is_integer(points) do
+  def add_points_to_user(%User{} = user, points, from \\ nil) when is_integer(points) do
     current_points = user.points || 0
     new_points = current_points + points
 
@@ -281,10 +282,15 @@ defmodule Anoma.Accounts do
       # add points to the user who invites this user if they exist
       case user do
         %{invite: %{owner: %User{}}} ->
-          add_points_to_user(user.invite.owner, trunc(points * 0.1))
+          add_points_to_user(user.invite.owner, trunc(points * 0.1), user)
 
         _ ->
           :noop
+      end
+
+      # add a log entry about who gave these points
+      if from do
+        {:ok, _entry} = Pointlog.create_point_entry(points, from.id, user.id)
       end
 
       user

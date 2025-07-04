@@ -138,7 +138,7 @@ defmodule Anoma.InvitesTest do
 
     test "invite tree empty" do
       user = user_fixture()
-      assert Invites.invite_tree(user) == {user.id, []}
+      assert Invites.invite_tree(user) == {user.id, [], 0}
     end
 
     test "invite tree with one invited user" do
@@ -151,7 +151,7 @@ defmodule Anoma.InvitesTest do
 
       # assert the invite exists
 
-      assert Invites.invite_tree(user) == {user.id, [{invited_user.id, []}]}
+      assert Invites.invite_tree(user) == {user.id, [{invited_user.id, [], 0}], 0}
     end
 
     test "invite tree with multiple invited user" do
@@ -173,8 +173,8 @@ defmodule Anoma.InvitesTest do
         end
 
       # assert the invite exists
-      invite_tree = Enum.map(invited_user_ids, &{&1, []})
-      assert Invites.invite_tree(user) == {user.id, invite_tree}
+      invite_tree = Enum.map(invited_user_ids, &{&1, [], 0})
+      assert Invites.invite_tree(user) == {user.id, invite_tree, 0}
     end
 
     test "invite tree with multiple invited users and invites for those users." do
@@ -201,14 +201,27 @@ defmodule Anoma.InvitesTest do
               []
             end
 
-          {invited_user.id, subtree}
+          {invited_user.id, subtree, 0}
         end
       end
 
       tree = create_invites.(0, user, create_invites)
 
       # assert the invite exists
-      assert Invites.invite_tree(user) == {user.id, tree}
+      assert Invites.invite_tree(user) == {user.id, tree, 0}
+    end
+
+    test "invite tree with multiple invited users and invites for those users, and points are computed." do
+      user = user_fixture()
+      invited_user = user_fixture()
+
+      # claim this invite by another user
+      invite = invite_fixture(%{owner_id: user.id})
+      assert {:ok, %Invite{} = _invite} = Invites.claim_invite(invite, invited_user, reward: 10)
+
+      # assert the invite exists
+
+      assert Invites.invite_tree(user) == {user.id, [{invited_user.id, [], 10}], 0}
     end
   end
 end
