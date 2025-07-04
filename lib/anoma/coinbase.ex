@@ -13,7 +13,7 @@ defmodule Anoma.Coinbase do
   # end
 
   def start_link(_) do
-    IO.puts "Starting coinbase"
+    IO.puts("Starting coinbase")
     {:ok, pid} = WebSockex.start_link(@url, __MODULE__, %{})
     Process.register(pid, :coinbase_process)
 
@@ -24,21 +24,34 @@ defmodule Anoma.Coinbase do
     {:ok, pid}
   end
 
-
   def handle_connect(conn, state) do
-    IO.puts "handle_connect"
+    IO.puts("handle_connect")
     {:ok, state}
   end
 
   def handle_disconnect(conn, state) do
-    IO.puts "disconnect"
+    IO.puts("disconnect")
     {:ok, state}
   end
 
   def terminate(reason, state) do
-    IO.inspect binding(), label: "terminate"
+    IO.inspect(binding(), label: "terminate")
     :ok
   end
+
+  def handle_ping(frame, state) do
+    IO.inspect(binding(), label: "ping")
+    {:ok, state}
+  end
+
+
+  def handle_pong(frame, state) do
+    IO.inspect(binding(), label: "ping")
+    {:ok, state}
+  end
+
+
+
   def handle_frame({_type, msg}, state) do
     Logger.debug(msg)
 
