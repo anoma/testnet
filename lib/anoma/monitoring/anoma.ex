@@ -75,7 +75,8 @@ defmodule Anoma.PromEx.Users do
           measurement: :active_users,
           tags: [:range]
         )
-      ]
+      ],
+      detach_on_error: false
     )
   end
 
