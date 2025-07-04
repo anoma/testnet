@@ -6,57 +6,49 @@ defmodule Anoma.Coinbase do
   require Logger
 
   # use the sandbox during dev because the api is not free
-  # if Mix.env() == :prod do
-  @url "wss://ws-feed.exchange.coinbase.com"
-  # else
-  # @url "wss://ws-feed-public.sandbox.exchange.coinbase.com"
-  # end
+  if Mix.env() == :prod do
+    @url "wss://ws-feed.exchange.coinbase.com"
+  else
+    @url "wss://ws-feed-public.sandbox.exchange.coinbase.com"
+  end
 
   def start_link(_) do
-    IO.puts("Starting coinbase")
-
     WebSockex.start_link(@url, __MODULE__, %{})
     |> tap(&IO.inspect(&1, label: "websocket"))
   end
 
   def handle_connect(_conn, state) do
-    IO.inspect("handle_connect")
-
     # subscribe to heartbeat
     heartbeat = heartbeat_message()
     WebSockex.cast(self(), {:send, heartbeat})
 
     # subscribe to ticker
-    # ticker = subscription_message()
-    # WebSockex.cast(self(), {:send, ticker})
+    ticker = subscription_message()
+    WebSockex.cast(self(), {:send, ticker})
 
     {:ok, state}
   end
 
   def handle_frame({_type, msg}, state) do
-    # try do
-    IO.inspect(msg, label: "message")
-    #   process_message(msg)
-    # rescue
-    #   e ->
-    #     Logger.error("failed to process coinbase message #{inspect(e)}")
-    # catch
-    #   e ->
-    #     Logger.error("failed to procress coinbase message #{inspect(e)}")
-    # end
+    try do
+      process_message(msg)
+    rescue
+      e ->
+        Logger.error("failed to process coinbase message #{inspect(e)}")
+    catch
+      e ->
+        Logger.error("failed to procress coinbase message #{inspect(e)}")
+    end
 
     {:ok, state}
   end
 
   def handle_cast({:send, message}, state) do
-    IO.inspect("handle_cast")
-    IO.inspect(binding())
-
     {:reply, {:text, Jason.encode!(message)}, state}
   end
 
   def handle_disconnect(%{reason: {:local, reason}}, state) do
-    IO.inspect("Local close with reason: #{inspect(reason)}")
+    Logger.error("Local close with reason: #{inspect(reason)}")
     {:ok, state}
   end
 
