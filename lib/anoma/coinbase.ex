@@ -68,7 +68,7 @@ defmodule Anoma.Coinbase do
         {:ok, _} =
           Anoma.Assets.create_currency(%{currency: ticker, price: price, timestamp: timestamp})
 
-        Logger.info("#{inspect DateTime.utc_now()} updated btc price")
+        Logger.info("#{inspect(DateTime.utc_now())} updated btc price")
 
       _ ->
         :noop
