@@ -113,7 +113,7 @@ defmodule Anoma.Coinbase do
       type: "subscribe",
       signature: signature,
       key: coinbase_api_key,
-      channels: ["ticker_batch"],
+      channels: ["ticker_batch", "heartbeats"],
       product_ids: ["BTC-USD"],
       passphrase: ""
     }
