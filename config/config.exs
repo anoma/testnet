@@ -48,7 +48,7 @@ config :anoma, Anoma.Scheduler,
 
 config :anoma, Anoma.PromEx,
   disabled: false,
-  manual_metrics_start_delay: :no_delay,
+  manual_metrics_start_delay: 5_000,
   drop_metrics_groups: [],
   grafana: :disabled,
   metrics_server: :disabled
