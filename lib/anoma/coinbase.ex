@@ -24,35 +24,30 @@ defmodule Anoma.Coinbase do
     {:ok, pid}
   end
 
-  def handle_connect(conn, state) do
-    IO.puts("handle_connect")
+  def handle_connect(_conn, state) do
+    IO.inspect(binding(), label: "handle_connect")
     {:ok, state}
   end
 
-  def handle_disconnect(conn, state) do
-    IO.puts("disconnect")
+  @doc false
+  def handle_disconnect(_connection_status_map, state) do
+    IO.inspect(binding(), label: "handle_disconnect")
     {:ok, state}
   end
 
-  def terminate(reason, state) do
-    IO.inspect(binding(), label: "terminate")
-    :ok
+  @doc false
+  def handle_ping(:ping, state) do
+    IO.inspect(binding(), label: "handle_ping")
+    {:reply, :pong, state}
   end
 
-  def handle_ping(frame, state) do
-    IO.inspect(binding(), label: "ping")
-    {:ok, state}
+  def handle_ping({:ping, msg}, state) do
+    IO.inspect(binding(), label: "handle_ping")
+    {:reply, {:pong, msg}, state}
   end
-
-
-  def handle_pong(frame, state) do
-    IO.inspect(binding(), label: "ping")
-    {:ok, state}
-  end
-
-
 
   def handle_frame({_type, msg}, state) do
+    IO.inspect(binding(), label: "handle_frame")
     Logger.debug(msg)
 
     try do
