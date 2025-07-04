@@ -4,7 +4,7 @@ config :anoma,
   # children: [Anoma.Scheduler, Anoma.Coinbase],
   children: [],
   debug_auth: false,
-  promex: false
+  promex: true
 
 # Configure your database
 config :anoma, Anoma.Repo,
