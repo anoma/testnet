@@ -7,26 +7,43 @@ defmodule Anoma.Coinbase do
 
   # use the sandbox during dev because the api is not free
   # if Mix.env() == :prod do
-    @url "wss://ws-feed.exchange.coinbase.com"
+  @url "wss://ws-feed.exchange.coinbase.com"
   # else
-    # @url "wss://ws-feed-public.sandbox.exchange.coinbase.com"
+  # @url "wss://ws-feed-public.sandbox.exchange.coinbase.com"
   # end
 
   def start_link(_) do
+    IO.puts "Starting coinbase"
     {:ok, pid} = WebSockex.start_link(@url, __MODULE__, %{})
-
     Process.register(pid, :coinbase_process)
-    subscription = generate_subscription_message()
+
+    pid = Process.whereis(:coinbase_process)
+    subscription = Anoma.Coinbase.generate_subscription_message()
 
     WebSockex.send_frame(pid, {:text, Jason.encode!(subscription)})
     {:ok, pid}
   end
 
+
+  def handle_connect(conn, state) do
+    IO.puts "handle_connect"
+    {:ok, state}
+  end
+
+  def handle_disconnect(conn, state) do
+    IO.puts "disconnect"
+    {:ok, state}
+  end
+
+  def terminate(reason, state) do
+    IO.inspect binding(), label: "terminate"
+    :ok
+  end
   def handle_frame({_type, msg}, state) do
     Logger.debug(msg)
 
     try do
-      IO.inspect msg, label: "message"
+      IO.inspect(msg, label: "message")
       process_message(msg)
     rescue
       e ->
@@ -92,9 +109,21 @@ defmodule Anoma.Coinbase do
       type: "subscribe",
       signature: signature,
       key: coinbase_api_key,
-      channels: ["ticker"],
+      channels: ["ticker_batch"],
       product_ids: ["BTC-USD"],
       passphrase: ""
     }
   end
+
+  # def heartbeat_message do
+  #   %{
+  #     timestamp: timestamp,
+  #     type: "subscribe",
+  #     signature: signature,
+  #     key: coinbase_api_key,
+  #     channels: ["ticker"],
+  #     product_ids: ["BTC-USD"],
+  #     passphrase: ""
+  #   }
+  # end
 end

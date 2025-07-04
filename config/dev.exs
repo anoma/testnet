@@ -2,9 +2,9 @@ import Config
 
 config :anoma,
   # children: [Anoma.Scheduler, Anoma.Coinbase],
-  children: [],
+  children: [Anoma.Coinbase],
   debug_auth: false,
-  promex: true
+  promex: false
 
 # Configure your database
 config :anoma, Anoma.Repo,
