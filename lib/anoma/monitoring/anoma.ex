@@ -24,7 +24,7 @@ defmodule Anoma.PromEx.Users do
           event_name: [:anoma, :users, :count],
           description: "Amount registered users",
           measurement: :count,
-          tags: [:status]
+          tags: []
         ),
         last_value(
           [:anoma, :user, :points],
@@ -115,9 +115,7 @@ defmodule Anoma.PromEx.Users do
         %{
           count: Enum.count(Anoma.Accounts.list_users())
         },
-        %{
-          status: "unused"
-        }
+        %{}
       )
 
       # emit metrics per user

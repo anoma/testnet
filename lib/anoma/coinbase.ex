@@ -14,42 +14,26 @@ defmodule Anoma.Coinbase do
 
   def start_link(_) do
     IO.puts("Starting coinbase")
-    {:ok, pid} = WebSockex.start_link(@url, __MODULE__, %{})
-    Process.register(pid, :coinbase_process)
 
-    pid = Process.whereis(:coinbase_process)
-    subscription = Anoma.Coinbase.generate_subscription_message()
-
-    WebSockex.send_frame(pid, {:text, Jason.encode!(subscription)})
-    {:ok, pid}
+    WebSockex.start_link(@url, __MODULE__, %{})
+    |> tap(&IO.inspect(&1, label: "websocket"))
   end
 
   def handle_connect(_conn, state) do
-    IO.inspect(binding(), label: "handle_connect")
+    IO.inspect("handle_connect")
+
+    # subscribe to heartbeat
+    heartbeat = heartbeat_message()
+    WebSockex.cast(self(), {:send, heartbeat})
+
+    # subscribe to ticker
+    ticker = generate_subscription_message()
+    WebSockex.cast(self(), {:send, ticker})
+
     {:ok, state}
-  end
-
-  @doc false
-  def handle_disconnect(_connection_status_map, state) do
-    IO.inspect(binding(), label: "handle_disconnect")
-    {:ok, state}
-  end
-
-  @doc false
-  def handle_ping(:ping, state) do
-    IO.inspect(binding(), label: "handle_ping")
-    {:reply, :pong, state}
-  end
-
-  def handle_ping({:ping, msg}, state) do
-    IO.inspect(binding(), label: "handle_ping")
-    {:reply, {:pong, msg}, state}
   end
 
   def handle_frame({_type, msg}, state) do
-    IO.inspect(binding(), label: "handle_frame")
-    Logger.debug(msg)
-
     try do
       IO.inspect(msg, label: "message")
       process_message(msg)
@@ -64,8 +48,20 @@ defmodule Anoma.Coinbase do
     {:ok, state}
   end
 
-  def handle_cast({:send, {_type, _msg} = frame}, state) do
-    {:reply, frame, state}
+  def handle_cast({:send, message}, state) do
+    IO.inspect("handle_cast")
+    IO.inspect(binding())
+
+    {:reply, {:text, Jason.encode!(message)}, state}
+  end
+
+  def handle_disconnect(%{reason: {:local, reason}}, state) do
+    Logger.info("Local close with reason: #{inspect(reason)}")
+    {:ok, state}
+  end
+
+  def handle_disconnect(disconnect_map, state) do
+    super(disconnect_map, state)
   end
 
   # ----------------------------------------------------------------------------
@@ -123,15 +119,19 @@ defmodule Anoma.Coinbase do
     }
   end
 
-  # def heartbeat_message do
-  #   %{
-  #     timestamp: timestamp,
-  #     type: "subscribe",
-  #     signature: signature,
-  #     key: coinbase_api_key,
-  #     channels: ["ticker"],
-  #     product_ids: ["BTC-USD"],
-  #     passphrase: ""
-  #   }
-  # end
+  def heartbeat_message do
+    coinbase_api_key = Application.get_env(:anoma, :coinbase_api_key)
+    {signature, timestamp} = generate_signature()
+
+    %{
+      timestamp: timestamp,
+      type: "subscribe",
+      signature: signature,
+      key: coinbase_api_key,
+      channels: [
+        %{name: "heartbeat", product_ids: ["BTC-USD"]}
+      ],
+      passphrase: ""
+    }
+  end
 end
