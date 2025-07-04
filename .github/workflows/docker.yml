@@ -6,10 +6,7 @@ on:
       - "v[0-9]+.[0-9]+.[0-9]+"
       - "v[0-9]+.[0-9]+.[0-9]+-[a-z]+"
     branches:
-      - "v?[0-9]+.[0-9]+.[0-9]+-rc"
-      - "v?[0-9]+.[0-9]+.[0-9]+-[a-z]+-rc"
-      - "v?[0-9]+.[0-9]+.[0-9]+-maint"
-      - "v?[0-9]+.[0-9]+.[0-9]+-[a-z]+-maint"
+      - main
   pull_request:
     branches:
       - "main"
@@ -53,8 +50,8 @@ jobs:
         with:
           context: .
           file: Dockerfile
-          push: ${{ startsWith(github.ref, 'refs/tags/v') }}
-          tags: ${{ env.REGISTRY_URL }}/anoma/testnet:${{ steps.get_version.outputs.version-without-v }}
+          push: ${{ startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
