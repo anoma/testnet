@@ -24,7 +24,7 @@ services:
       - COINBASE_API_KEY=${COINBASE_API_KEY}
       - COINBASE_SECRET=${COINBASE_SECRET}
       - ECTO_WATCH_CLEANUP=cleanup
-      - DEBUG=true
+      - DEBUG=${DEBUG:-false}
     depends_on:
       - db
 
