@@ -23,7 +23,18 @@ defmodule Anoma.Coinbase do
 
   def handle_frame({_type, msg}, state) do
     Logger.debug(msg)
-    process_message(msg)
+
+    try do
+      process_message(msg)
+
+    rescue
+      e ->
+        Logger.error("failed to process coinbase message #{inspect(e)}")
+    catch
+      e ->
+        Logger.error("failed to procress coinbase message #{inspect(e)}")
+    end
+
     {:ok, state}
   end
 
