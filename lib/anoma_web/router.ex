@@ -22,8 +22,8 @@ defmodule AnomaWeb.Router do
   end
 
   scope "/" do
-    pipe_through :api
-    get "/", AnomaWeb.HomeController, :index
+    pipe_through :browser
+    get "/", AnomaWeb.Html.HomeController, :index
 
     scope "/openapi" do
       # serve the spec
